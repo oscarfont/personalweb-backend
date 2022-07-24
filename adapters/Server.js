@@ -1,5 +1,6 @@
 import express from 'express';
 import { blogRouter } from "../controllers/blog/blogRouter.js";
+import { userRouter } from '../controllers/user/userRouter.js';
 import { MethodEnum } from "../utils/MethodEnum.js";
 
 class ServerAdapter {
@@ -43,7 +44,14 @@ class ServerAdapter {
             this.registerRoute(bgRouter, route);
         });
 
+        const usrRouter = express.Router();
+        userRouter.routes.forEach((route) => {
+            this.registerRoute(usrRouter, route);
+        });
+
+
         this.#server.use(blogRouter.prefix, bgRouter);
+        this.#server.use(userRouter.prefix, usrRouter);
     }
 
     // getters

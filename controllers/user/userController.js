@@ -1,10 +1,3 @@
-// user-controller.js - User route module.
-
-var express = require('express');
-var router = express.Router();
-
-router.get('/', function (req, res) {
-    res.send('Users Controller! :)');
-})
-
-module.exports = router;
+export const getAllUsers = (logger, req, res) => {
+    return res.json({ 'data': [{ id: 1, username: 'admin', pass: '***' }, { id: 2, username: 'user', pass: '***1' }] });
+};
