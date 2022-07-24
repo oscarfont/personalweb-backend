@@ -8,6 +8,7 @@ import { MethodEnum } from "../utils/MethodEnum.js";
  * ====================
  * ServerAdapter class
  * ====================
+ * @descrption
  * Adapter Pattern applied to the server details.
  * This class works as a wrapper of the server library.
  * Currently uses Express.js, however if the library is wanted to be changed, 

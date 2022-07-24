@@ -6,6 +6,7 @@ import { LogLevel } from "../utils/LogLevel.js";
  * ====================
  * LoggerAdapter class
  * ====================
+ * @description
  * Adapter Pattern applied to the logger details.
  * This class works as a wrapper of the logging library.
  * Currently uses Pino, however if the library is wanted to be changed, 
