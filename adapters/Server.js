@@ -3,6 +3,16 @@ import { blogRouter } from "../controllers/blog/blogRouter.js";
 import { userRouter } from '../controllers/user/userRouter.js';
 import { MethodEnum } from "../utils/MethodEnum.js";
 
+/**
+ * @author Óscar Font
+ * ====================
+ * ServerAdapter class
+ * ====================
+ * Adapter Pattern applied to the server details.
+ * This class works as a wrapper of the server library.
+ * Currently uses Express.js, however if the library is wanted to be changed, 
+ * the only file needed to modify is this adapter class and the code would still work.
+ */
 class ServerAdapter {
     #server;
     #port;

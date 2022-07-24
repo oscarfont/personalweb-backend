@@ -1,6 +1,16 @@
 import pino from "pino";
 import { LogLevel } from "../utils/LogLevel.js";
 
+/**
+ * @author Óscar Font
+ * ====================
+ * LoggerAdapter class
+ * ====================
+ * Adapter Pattern applied to the logger details.
+ * This class works as a wrapper of the logging library.
+ * Currently uses Pino, however if the library is wanted to be changed, 
+ * the only file needed to modify is this adapter class and the code would still work.
+ */
 class LoggerAdapter {
 
     // logger property that contains the logger object
