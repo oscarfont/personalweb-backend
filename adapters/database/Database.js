@@ -28,13 +28,33 @@ class DatabaseAdapter {
     }
 
     async initDB() {
-        const data = {
-            user: [],
-            post: []
+        try {
+            const data = {
+                user: [],
+                post: []
+            }
+            this.#dbClient.data = data;
+            await this.#dbClient.write();
+            this.#logger.log(DatabaseAdapter.name, LogLevel.INFO, 'User and Post collections successfully created');
+        } catch (e) {
+            throw e
         }
-        this.#dbClient.data = data;
-        await this.#dbClient.write();
-        this.#logger.log(DatabaseAdapter.name, LogLevel.INFO, 'User and Post collections successfully created');
+    }
+
+    getAllOf(table) {
+        const data = this.#dbClient.data[table];
+        if (!data) throw new Error('No data found in collection ' + table);
+        return data;
+    }
+
+    findOf(table, condition) {
+        const data = this.#dbClient.data[table].find(condition);
+        if (!data) throw new Error('No data found in collection ' + table + ' for condition ' + condition);
+        return data;
+    }
+
+    insertInto(table, obj) {
+        this.#dbClient.data[table].push(obj);
     }
 
 }

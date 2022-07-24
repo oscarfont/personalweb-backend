@@ -9,6 +9,11 @@
  * of the backend server endpoints regarding blog posts.
  */
 
-export const getAllBlogs = (logger, req, res) => {
-    return res.json({ 'data': [{ id: 1, title: 'how to consume rest api' }, { id: 2, title: 'explain postgresql query' }] });
+export const getAllBlogs = async (logger, dbAdapter, req, res) => {
+    try {
+        const blogs = await dbAdapter.getAllOf('asds');
+        return res.json({ 'data': blogs });
+    } catch (e) {
+        return res.status(500).send({ 'error': e.message });
+    }
 };

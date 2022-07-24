@@ -6,9 +6,9 @@ import { LogLevel } from './adapters/logger/LogLevel.js';
 const Main = async () => {
     const logger = new LoggerAdapter();
     const port = 3000;
-    const server = new ServerAdapter(port, logger);
     const db = new DatabaseAdapter(logger);
     await db.initDB();
+    const server = new ServerAdapter(port, logger, db);
     server.start();
     logger.log(Main.name, LogLevel.INFO, 'Server sucessfully started at port ' + port);
 };
