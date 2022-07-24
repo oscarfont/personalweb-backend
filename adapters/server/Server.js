@@ -19,12 +19,14 @@ class ServerAdapter {
     #port;
     #logger;
     #db;
+    #jwt;
 
-    constructor(port, logger, dbAdapter) {
+    constructor(port, logger, dbAdapter, jwtAdapter) {
         this.#server = express();
         this.#port = port;
         this.#logger = logger;
         this.#db = dbAdapter;
+        this.#jwt = jwtAdapter;
     }
 
     start() {
@@ -36,16 +38,16 @@ class ServerAdapter {
     registerRoute(router, route) {
         switch (route.method) {
             case MethodEnum.DELETE:
-                router.delete(route.path, route.handler.bind(null, this.#logger, this.#db));
+                router.delete(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt));
                 break;
             case MethodEnum.PUT:
-                router.put(route.path, route.handler.bind(null, this.#logger, this.#db));
+                router.put(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt));
                 break;
             case MethodEnum.POST:
-                router.post(route.path, route.handler.bind(null, this.#logger, this.#db));
+                router.post(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt));
                 break;
             default: // GET
-                router.get(route.path, route.handler.bind(null, this.#logger, this.#db));
+                router.get(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt));
                 break;
         }
     }

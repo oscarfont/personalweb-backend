@@ -1,3 +1,4 @@
+import e from 'express';
 import { Low, JSONFile } from 'lowdb'
 import { LogLevel } from '../logger/LogLevel.js';
 
@@ -53,8 +54,13 @@ class DatabaseAdapter {
         return data;
     }
 
-    insertInto(table, obj) {
-        this.#dbClient.data[table].push(obj);
+    async insertInto(table, obj) {
+        try {
+            this.#dbClient.data[table].push(obj);
+            await this.#dbClient.write();
+        } catch (e) {
+            throw e;
+        }
     }
 
 }
