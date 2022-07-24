@@ -1,5 +1,5 @@
 import pino from "pino";
-import { LogLevel } from "../utils/LogLevel.js";
+import { LogLevel } from "./LogLevel.js";
 
 /**
  * @author Óscar Font

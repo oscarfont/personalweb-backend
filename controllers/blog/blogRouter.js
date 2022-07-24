@@ -1,4 +1,4 @@
-import { MethodEnum } from "../../utils/MethodEnum.js";
+import { MethodEnum } from "../../adapters/server/MethodEnum.js";
 import { getAllBlogs } from "./blogController.js";
 
 /**

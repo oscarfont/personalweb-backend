@@ -1,7 +1,7 @@
 import DatabaseAdapter from './adapters/database/Database.js';
-import LoggerAdapter from './adapters/Logger.js';
-import ServerAdapter from './adapters/Server.js';
-import { LogLevel } from './utils/LogLevel.js';
+import LoggerAdapter from './adapters/logger/Logger.js';
+import ServerAdapter from './adapters/server/Server.js';
+import { LogLevel } from './adapters/logger/LogLevel.js';
 
 const Main = async () => {
     const logger = new LoggerAdapter();

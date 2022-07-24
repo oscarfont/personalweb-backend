@@ -1,7 +1,7 @@
 import express from 'express';
-import { blogRouter } from "../controllers/blog/blogRouter.js";
-import { userRouter } from '../controllers/user/userRouter.js';
-import { MethodEnum } from "../utils/MethodEnum.js";
+import { blogRouter } from "../../controllers/blog/blogRouter.js";
+import { userRouter } from '../../controllers/user/userRouter.js';
+import { MethodEnum } from "./MethodEnum.js";
 
 /**
  * @author Óscar Font

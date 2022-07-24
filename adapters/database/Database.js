@@ -1,5 +1,5 @@
 import { Low, JSONFile } from 'lowdb'
-import { LogLevel } from '../../utils/LogLevel.js';
+import { LogLevel } from '../logger/LogLevel.js';
 
 /**
  * @author Óscar Font
