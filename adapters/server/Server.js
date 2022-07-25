@@ -20,13 +20,15 @@ class ServerAdapter {
     #logger;
     #db;
     #jwt;
+    #crypto;
 
-    constructor(port, logger, dbAdapter, jwtAdapter) {
+    constructor(port, logger, dbAdapter, jwtAdapter, cryptoAdapter) {
         this.#server = express();
         this.#port = port;
         this.#logger = logger;
         this.#db = dbAdapter;
         this.#jwt = jwtAdapter;
+        this.#crypto = cryptoAdapter;
     }
 
     start() {
@@ -38,16 +40,16 @@ class ServerAdapter {
     registerRoute(router, route) {
         switch (route.method) {
             case MethodEnum.DELETE:
-                router.delete(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt));
+                router.delete(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt, this.#crypto));
                 break;
             case MethodEnum.PUT:
-                router.put(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt));
+                router.put(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt, this.#crypto));
                 break;
             case MethodEnum.POST:
-                router.post(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt));
+                router.post(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt, this.#crypto));
                 break;
             default: // GET
-                router.get(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt));
+                router.get(route.path, route.handler.bind(null, this.#logger, this.#db, this.#jwt, this.#crypto));
                 break;
         }
     }
