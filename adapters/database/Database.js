@@ -1,4 +1,3 @@
-import e from 'express';
 import { Low, JSONFile } from 'lowdb'
 import { LogLevel } from '../logger/LogLevel.js';
 
@@ -48,9 +47,11 @@ class DatabaseAdapter {
         return data;
     }
 
-    findOf(table, condition) {
-        const data = this.#dbClient.data[table].find(condition);
-        if (!data) throw new Error('No data found in collection ' + table + ' for condition ' + condition);
+    findOf(table, field) {
+        const tableData = this.#dbClient.data[table];
+        const name = Object.keys(field)[0];
+        const data = tableData.find((obj) => obj[name] === field[name]);
+        if (!data) throw new Error('No data found in collection ' + table + ' for condition ' + field);
         return data;
     }
 

@@ -37,7 +37,7 @@ class JWTAdapter {
     verifyToken(jwt) {
         try {
             // TODO obtain secret from ENV var
-            const decoded = jwt.verify(jwt, 'mysecret');
+            const decoded = this.#jwtInstance.verify(jwt, 'mysecret');
             return decoded;
         } catch (err) {
             throw err

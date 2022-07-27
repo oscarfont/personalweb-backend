@@ -27,11 +27,20 @@ export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
     }
 };
 
-export const signIn = (logger, dbAdapter, req, res) => {
+export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
+        // get user credentials
         const { email, password } = req.body;
-        const user = dbAdapter.findOf('user', { email: email });
-        const encryptedPass = cryptoAdapter.encrypt(password);
+
+        // obtain users data
+        const userData = dbAdapter.findOf('user', { email: email });
+        if (!userData) throw new Error('There is no user registered for the current email. Please try again.');
+
+        // check if user can be authenticated
+        const isAuthorized = cryptoAdapter.checkEncryption(userData.pass, password);
+        if (!isAuthorized) throw new Error('Incorrect password. Please try again.');
+
+        // if user is authenticated generate jwt token
         const jwt = jwtAdapter.generateToken('admin');
         return res.json({ 'data': jwt });
     } catch (e) {

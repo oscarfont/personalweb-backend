@@ -17,24 +17,28 @@ class CryptoAdapter {
     #key;
     #iv;
     #cipher;
-    #hmac;
 
     constructor(logger) {
         this.#logger = logger;
         this.#crytpoInstance = crypto;
         this.#key = this.#crytpoInstance.randomBytes(32); // TODO read from ENV vars
-        this.#iv = this.#crytpoInstance.randomBytes(16);
-        this.#algorithm = 'aes-256-cbc';
-        this.#cipher = this.#crytpoInstance.createCipheriv(this.#algorithm, Buffer.from(this.#key), this.#iv);
-        console.log(this.#cipher);
+        this.#iv = this.#crytpoInstance.randomBytes(12);
+        this.#algorithm = 'aes-256-gcm';
+        this.#cipher = this.#crytpoInstance.createCipheriv(this.#algorithm, Buffer.from(this.#key, 'utf-8'), Buffer.from(this.#iv, 'utf-8'));
     }
 
     encrypt(text) {
-        // encrypt the text
-        let encrypted = this.#cipher.update(text);
-        encrypted = Buffer.concat([encrypted, Buffer.from(this.#cipher.final('hex'))]);
+        let encrypted = this.#cipher.update(text, 'utf-8', 'base64');
+        encrypted += this.#cipher.final('base64');
 
-        return { iv: this.#iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+        return { iv: this.#iv.toString('base64'), data: encrypted };
+    }
+
+    checkEncryption(encryption, text) {
+        const cipher = this.#crytpoInstance.createCipheriv(this.#algorithm, Buffer.from(this.#key, 'utf-8'), Buffer.from(encryption.iv, 'base64'));
+        let encrypted = cipher.update(text, 'utf-8', 'base64');
+        encrypted += cipher.final('base64');
+        return encryption.data === encrypted;
     }
 }
 
