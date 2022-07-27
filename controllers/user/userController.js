@@ -9,12 +9,6 @@
  * of the backend server endpoints regarding users of the application.
  */
 
-import { LogLevel } from "../../adapters/logger/LogLevel.js";
-
-export const getAllUsers = (logger, dbAdapter, req, res) => {
-    return res.json({ 'data': [{ id: 1, username: 'admin', pass: '***' }, { id: 2, username: 'user', pass: '***1' }] });
-};
-
 export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
         const { email, password } = req.body;
@@ -48,6 +42,11 @@ export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
     }
 };
 
-export const signOut = (logger, dbAdapter, req, res) => {
-    return res.json({ 'data': [{ id: 1, username: 'admin', pass: '***' }, { id: 2, username: 'user', pass: '***1' }] });
+export const signOut = (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+    try {
+        // client will remove user token and call this endpoint
+        return res.json({ 'data': 'sign-out success' });
+    } catch (e) {
+        return res.status(500).send({ 'error': e.message });
+    }
 };
