@@ -13,7 +13,7 @@
 class User {
     email;
     role;
-    #password;
+    password;
     #jwt;
 
     constructor(email, role) {
@@ -30,11 +30,11 @@ class User {
     }
 
     setPassword(pass) {
-        this.#password = pass;
+        this.password = pass;
     }
 
     getPassword() {
-        return this.#password;
+        return this.password;
     }
 }
 

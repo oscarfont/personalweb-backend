@@ -1,5 +1,5 @@
 import { MethodEnum } from "../../adapters/server/MethodEnum.js";
-import { getAllUsers, signIn, signOut, signUp } from "./userController.js";
+import { signIn, signOut, signUp } from "./userController.js";
 
 /**
  * @author Óscar Font
@@ -19,11 +19,6 @@ class UserRouter {
     constructor() {
         this.prefix = '/user';
         this.routes = [
-            {
-                path: '/get/all',
-                method: MethodEnum.GET,
-                handler: getAllUsers
-            },
             {
                 path: '/signIn',
                 method: MethodEnum.POST,

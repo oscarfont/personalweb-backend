@@ -9,7 +9,7 @@
  * of the backend server endpoints regarding users of the application.
  */
 
-import User from "../../models/user";
+import User from "../../models/user.js";
 
 export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
@@ -26,6 +26,7 @@ export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
 
         // generate jwt token and return user data
         const jwt = jwtAdapter.generateToken(user.role);
+        user.setJWT(jwt);
 
         return res.json({ 'data': { email: user.email, role: user.role, jwt: user.getJWT() } });
     } catch (e) {
@@ -52,6 +53,8 @@ export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
 
         // if user is authenticated generate jwt token
         const jwt = jwtAdapter.generateToken(user.role);
+        user.setJWT(jwt);
+
         return res.json({ 'data': { email: user.email, role: user.role, jwt: user.getJWT() } });
     } catch (e) {
         return res.status(500).send({ 'error': e.message });
