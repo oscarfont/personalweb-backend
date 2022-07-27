@@ -20,7 +20,6 @@ class DatabaseAdapter {
     constructor(logger) {
         this.#logger = logger;
         this.#dbClient = new Low(new JSONFile('./adapters/database/db.json'));
-        this.#logger.log(DatabaseAdapter.name, LogLevel.INFO, 'LowDB client successfully started');
     }
 
     getDBClient() {
@@ -38,6 +37,16 @@ class DatabaseAdapter {
             this.#logger.log(DatabaseAdapter.name, LogLevel.INFO, 'User and Post collections successfully created');
         } catch (e) {
             throw e
+        }
+    }
+
+    async start() {
+        try {
+            await this.#dbClient.read();
+            if (!this.#dbClient.data) await this.initDB();
+            this.#logger.log(DatabaseAdapter.name, LogLevel.INFO, 'LowDB Client started successfully');
+        } catch (e) {
+            throw e;
         }
     }
 

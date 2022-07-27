@@ -11,7 +11,7 @@ const Main = async () => {
 
     // init database
     const db = new DatabaseAdapter(logger);
-    if (!db.getDBClient().data) await db.initDB();
+    await db.start();
 
     // init auth adapter
     const jwtAdapter = new JWTAdapter(logger);
