@@ -1,5 +1,5 @@
 import { MethodEnum } from "../../adapters/server/MethodEnum.js";
-import { getAllBlogs } from "./blogController.js";
+import { getAllBlogsOfCategory, getBlogDetail, publishBlogOfCategory, removeBlogOfCategory } from "./blogController.js";
 
 /**
  * @author Óscar Font
@@ -22,7 +22,22 @@ class BlogRouter {
             {
                 path: '/get/all',
                 method: MethodEnum.GET,
-                handler: getAllBlogs
+                handler: getAllBlogsOfCategory
+            },
+            {
+                path: '/get/:category?:id',
+                method: MethodEnum.GET,
+                handler: getBlogDetail
+            },
+            {
+                path: '/publish',
+                method: MethodEnum.POST,
+                handler: publishBlogOfCategory
+            },
+            {
+                path: '/remove/:category?:id',
+                method: MethodEnum.DELETE,
+                handler: removeBlogOfCategory
             }
         ]
     }

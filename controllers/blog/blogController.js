@@ -44,6 +44,8 @@ export const getBlogDetail = async (logger, dbAdapter, req, res) => {
 
 export const publishBlogOfCategory = async (logger, dbAdapter, req, res) => {
     try {
+        // TODO check JWT token
+
         // get category and blog post
         const post = req.body;
         const category = req.query.category;
@@ -59,6 +61,8 @@ export const publishBlogOfCategory = async (logger, dbAdapter, req, res) => {
 
 export const removeBlogOfCategory = async (logger, dbAdapter, req, res) => {
     try {
+        // TODO check JWT token
+
         // get category and id of blog post
         const category = req.query.category;
         const id = req.query.id;
