@@ -51,7 +51,22 @@ export const publishBlogOfCategory = async (logger, dbAdapter, req, res) => {
         // insert object into db
         await dbAdapter.insertInto('post', post, category);
 
-        return res.json(formatter.formatOKResponse(200, blogs));
+        return res.json(formatter.formatOKResponse(200, 'Blog post published sucessfully!'));
+    } catch (e) {
+        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+    }
+};
+
+export const removeBlogOfCategory = async (logger, dbAdapter, req, res) => {
+    try {
+        // get category and id of blog post
+        const category = req.query.category;
+        const id = req.query.id;
+
+        // remove element from db
+        await dbAdapter.removeElementByIdFrom('post', id, category);
+
+        return res.json(formatter.formatOKResponse(200, 'Blog post removed successfully!'));
     } catch (e) {
         return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }

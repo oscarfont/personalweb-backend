@@ -85,6 +85,21 @@ class DatabaseAdapter {
         }
     }
 
+    async removeElementByIdFrom(table, id, subtable) {
+        try {
+            if (subtable == null) {
+                const newData = this.#dbClient.data[table].filter(obj => obj.id !== id);
+                this.#dbClient.data[table] = newData;
+            } else {
+                const newData = this.#dbClient.data[table][subtable].filter(obj => obj.id !== id);
+                this.#dbClient.data[table][subtable] = newData;
+            }
+            await this.#dbClient.write();
+        } catch (e) {
+            throw e;
+        }
+    }
+
 }
 
 export default DatabaseAdapter;
