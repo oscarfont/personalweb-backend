@@ -50,9 +50,14 @@ class DatabaseAdapter {
         }
     }
 
-    getAllOf(table) {
-        const data = this.#dbClient.data[table];
-        if (!data) throw new Error('No data found in collection ' + table);
+    getAllOf(table, subtable) {
+        let data = null;
+        if (subtable == null) {
+            data = this.#dbClient.data[table];
+        } else {
+            data = this.#dbClient.data[table][subtable];
+        }
+        if (!data) throw new Error('No data found in collection ' + table + ' ' + subtable);
         return data;
     }
 

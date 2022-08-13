@@ -9,11 +9,35 @@
  * of the backend server endpoints regarding blog posts.
  */
 
-export const getAllBlogs = async (logger, dbAdapter, req, res) => {
+export const getAllBlogsOfCategory = async (logger, dbAdapter, req, res) => {
     try {
-        const blogs = await dbAdapter.getAllOf('asds');
-        return res.json({ 'data': blogs });
+        // get category of blogs to be retrieved
+        const category = req.query.category;
+
+        // get all blogs of category
+        const blogs = await dbAdapter.getAllOf('post', category);
+
+        return res.json(formatter.formatOKResponse(200, blogs));
     } catch (e) {
-        return res.status(500).send({ 'error': e.message });
+        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+    }
+};
+
+export const getBlogDetail = async (logger, dbAdapter, req, res) => {
+    try {
+        // get category and id of the post to be retrieved
+        const category = req.query.category;
+        const id = req.query.id;
+
+        // get all blogs of category
+        const blogs = await dbAdapter.getAllOf('post', category);
+        const post = blogs.find(blog => blog.id == id);
+
+        // if no post has been found return error
+        if (!post) throw new Error('Blog post with id: ' + id + ' not found');
+
+        return res.json(formatter.formatOKResponse(200, blogs));
+    } catch (e) {
+        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }
 };
