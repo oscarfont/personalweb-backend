@@ -1,5 +1,6 @@
 import { Low, JSONFile } from 'lowdb'
 import { LogLevel } from '../logger/LogLevel.js';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * @author Óscar Font
@@ -69,9 +70,15 @@ class DatabaseAdapter {
         return data;
     }
 
-    async insertInto(table, obj) {
+    async insertInto(table, obj, subtable) {
         try {
-            this.#dbClient.data[table].push(obj);
+            // generate unique id before insert of data
+            obj.id = uuidv4();
+            if (subtable == null) {
+                this.#dbClient.data[table].push(obj);
+            } else {
+                this.#dbClient.data[table][subtable].push(obj);
+            }
             await this.#dbClient.write();
         } catch (e) {
             throw e;

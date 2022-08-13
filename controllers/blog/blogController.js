@@ -41,3 +41,18 @@ export const getBlogDetail = async (logger, dbAdapter, req, res) => {
         return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }
 };
+
+export const publishBlogOfCategory = async (logger, dbAdapter, req, res) => {
+    try {
+        // get category and blog post
+        const post = req.body;
+        const category = req.query.category;
+
+        // insert object into db
+        await dbAdapter.insertInto('post', post, category);
+
+        return res.json(formatter.formatOKResponse(200, blogs));
+    } catch (e) {
+        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+    }
+};
