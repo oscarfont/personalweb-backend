@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { blogRouter } from "../../controllers/blog/blogRouter.js";
 import { userRouter } from '../../controllers/user/userRouter.js';
 import { MethodEnum } from "./MethodEnum.js";
@@ -34,6 +35,7 @@ class ServerAdapter {
     start() {
         this.#server.listen(this.#port);
         this.#server.use(express.json());
+        this.#server.use(cors());
         this.registeRouters();
     }
 

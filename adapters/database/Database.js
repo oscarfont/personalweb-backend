@@ -31,7 +31,7 @@ class DatabaseAdapter {
         try {
             const data = {
                 user: [],
-                post: []
+                post: {}
             }
             this.#dbClient.data = data;
             await this.#dbClient.write();
@@ -51,6 +51,10 @@ class DatabaseAdapter {
         }
     }
 
+    generateId() {
+        return uuidv4();
+    }
+
     getAllOf(table, subtable) {
         let data = null;
         if (subtable == null) {
@@ -58,7 +62,6 @@ class DatabaseAdapter {
         } else {
             data = this.#dbClient.data[table][subtable];
         }
-        if (!data) throw new Error('No data found in collection ' + table + ' ' + subtable);
         return data;
     }
 
@@ -75,9 +78,17 @@ class DatabaseAdapter {
             // generate unique id before insert of data
             obj.id = uuidv4();
             if (subtable == null) {
-                this.#dbClient.data[table].push(obj);
+                if (typeof obj == 'object') {
+                    this.#dbClient.data[table] = obj;
+                } else {
+                    this.#dbClient.data[table].push(obj);
+                }
             } else {
-                this.#dbClient.data[table][subtable].push(obj);
+                if (typeof obj == 'object') {
+                    this.#dbClient.data[table] = obj;
+                } else {
+                    this.#dbClient.data[table].push(obj);
+                }
             }
             await this.#dbClient.write();
         } catch (e) {

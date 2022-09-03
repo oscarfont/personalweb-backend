@@ -9,7 +9,24 @@
  * of the backend server endpoints regarding blog posts.
  */
 
-export const getAllBlogsOfCategory = async (logger, dbAdapter, req, res) => {
+import { formatter } from "../../utils/formatter.js";
+
+export const getAllBlogCategories = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+    try {
+        // get all blogs and categories
+        const blogs = await dbAdapter.getAllOf('post');
+
+        // get all categories of blogs
+        const categories = Object.keys(blogs).filter((key) => key !== 'id');
+
+        return res.json(formatter.formatOKResponse(200, categories));
+    } catch (e) {
+        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+    }
+};
+
+
+export const getAllBlogsOfCategory = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
         // get category of blogs to be retrieved
         const category = req.query.category;
@@ -23,7 +40,7 @@ export const getAllBlogsOfCategory = async (logger, dbAdapter, req, res) => {
     }
 };
 
-export const getBlogDetail = async (logger, dbAdapter, req, res) => {
+export const getBlogDetail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
         // get category and id of the post to be retrieved
         const category = req.query.category;
@@ -42,7 +59,7 @@ export const getBlogDetail = async (logger, dbAdapter, req, res) => {
     }
 };
 
-export const publishBlogOfCategory = async (logger, dbAdapter, req, res) => {
+export const publishBlogOfCategory = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
         // TODO check JWT token
 
@@ -50,8 +67,19 @@ export const publishBlogOfCategory = async (logger, dbAdapter, req, res) => {
         const post = req.body;
         const category = req.query.category;
 
+        // check if category is created
+        const postsOfCategory = await dbAdapter.getAllOf('post', category);
+
+        let dataToInsert = {};
+        if (!postsOfCategory) {
+            post.id = dbAdapter.generateId();
+            dataToInsert[category] = { posts: [post] }
+        } else {
+            dataToInsert = post;
+        }
+
         // insert object into db
-        await dbAdapter.insertInto('post', post, category);
+        await dbAdapter.insertInto('post', dataToInsert, postsOfCategory ? null : category);
 
         return res.json(formatter.formatOKResponse(200, 'Blog post published sucessfully!'));
     } catch (e) {
@@ -59,7 +87,7 @@ export const publishBlogOfCategory = async (logger, dbAdapter, req, res) => {
     }
 };
 
-export const removeBlogOfCategory = async (logger, dbAdapter, req, res) => {
+export const removeBlogOfCategory = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
         // TODO check JWT token
 
