@@ -72,8 +72,10 @@ export const publishBlogOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
 
         let dataToInsert = {};
         if (!postsOfCategory) {
+            const categoryPosts = await dbAdapter.getAllOf('post');
             post.id = dbAdapter.generateId();
-            dataToInsert[category] = { posts: [post] }
+            categoryPosts[category] = { posts: [post] };
+            dataToInsert = categoryPosts;
         } else {
             dataToInsert = post;
         }
