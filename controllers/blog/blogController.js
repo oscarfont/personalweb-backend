@@ -14,12 +14,15 @@ import { formatter } from "../../utils/formatter.js";
 export const getAllBlogCategories = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
         // get all blogs and categories
-        const blogs = await dbAdapter.getAllOf('post');
+        const blogs = await dbAdapter.getAllOf('blogs');
 
         // get all categories of blogs
-        const categories = Object.keys(blogs).filter((key) => key !== 'id');
+        const categories = new Set();
+        blogs.forEach((post) => {
+            categories.add(post.category);
+        });
 
-        return res.json(formatter.formatOKResponse(200, categories));
+        return res.json(formatter.formatOKResponse(200, Array.from(categories)));
     } catch (e) {
         return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }
@@ -32,7 +35,7 @@ export const getAllBlogsOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
         const category = req.query.category;
 
         // get all blogs of category
-        const blogs = await dbAdapter.getAllOf('post', category);
+        const blogs = await dbAdapter.findOf('blogs', { category: category });
 
         return res.json(formatter.formatOKResponse(200, blogs));
     } catch (e) {
@@ -47,7 +50,7 @@ export const getBlogDetail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter
         const id = req.query.id;
 
         // get all blogs of category
-        const blogs = await dbAdapter.getAllOf('post', category);
+        const blogs = await dbAdapter.findOf('blogs', { category: category });
         const post = blogs.find(blog => blog.id == id);
 
         // if no post has been found return error
@@ -67,21 +70,11 @@ export const publishBlogOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
         const post = req.body;
         const category = req.query.category;
 
-        // check if category is created
-        const postsOfCategory = await dbAdapter.getAllOf('post', category);
-
-        let dataToInsert = {};
-        if (!postsOfCategory) {
-            const categoryPosts = await dbAdapter.getAllOf('post');
-            post.id = dbAdapter.generateId();
-            categoryPosts[category] = { posts: [post] };
-            dataToInsert = categoryPosts;
-        } else {
-            dataToInsert = post;
-        }
+        // add category to post
+        post.category = category;
 
         // insert object into db
-        await dbAdapter.insertInto('post', dataToInsert, postsOfCategory ? null : category);
+        await dbAdapter.insertInto('blogs', post);
 
         return res.json(formatter.formatOKResponse(200, 'Blog post published sucessfully!'));
     } catch (e) {
@@ -89,16 +82,15 @@ export const publishBlogOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
     }
 };
 
-export const removeBlogOfCategory = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const removeBlog = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
         // TODO check JWT token
 
         // get category and id of blog post
-        const category = req.query.category;
         const id = req.query.id;
 
         // remove element from db
-        await dbAdapter.removeElementByIdFrom('post', id, category);
+        await dbAdapter.removeElementByIdFrom('blogs', id);
 
         return res.json(formatter.formatOKResponse(200, 'Blog post removed successfully!'));
     } catch (e) {

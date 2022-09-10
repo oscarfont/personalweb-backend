@@ -41,7 +41,7 @@ export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
         const { email, password } = req.body;
 
         // obtain users data
-        const userData = dbAdapter.findOf('user', { email: email });
+        const userData = dbAdapter.findOf('user', { email: email })[0];
         if (!userData) throw new Error('There is no user registered for the current email. Please try again.');
 
         // if found create user model

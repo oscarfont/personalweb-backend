@@ -31,7 +31,7 @@ class DatabaseAdapter {
         try {
             const data = {
                 user: [],
-                post: {}
+                blogs: []
             }
             this.#dbClient.data = data;
             await this.#dbClient.write();
@@ -55,40 +55,27 @@ class DatabaseAdapter {
         return uuidv4();
     }
 
-    getAllOf(table, subtable) {
-        let data = null;
-        if (subtable == null) {
-            data = this.#dbClient.data[table];
-        } else {
-            data = this.#dbClient.data[table][subtable];
-        }
-        return data;
+    getAllOf(table) {
+        return this.#dbClient.data[table];
     }
 
     findOf(table, field) {
         const tableData = this.#dbClient.data[table];
         const name = Object.keys(field)[0];
-        const data = tableData.find((obj) => obj[name] === field[name]);
+        const data = tableData.filter((obj) => obj[name] === field[name]);
         if (!data) throw new Error('No data found in collection ' + table + ' for condition ' + field);
         return data;
     }
 
-    async insertInto(table, obj, subtable) {
+    async insertInto(table, obj) {
         try {
             // generate unique id before insert of data
             obj.id = uuidv4();
-            if (subtable == null) {
-                if (typeof obj == 'object') {
-                    this.#dbClient.data[table] = obj;
-                } else {
-                    this.#dbClient.data[table].push(obj);
-                }
+            const data = this.#dbClient.data[table];
+            if (!data) {
+                this.#dbClient.data[table] = [obj];
             } else {
-                if (typeof obj == 'object') {
-                    this.#dbClient.data[table] = obj;
-                } else {
-                    this.#dbClient.data[table].push(obj);
-                }
+                this.#dbClient.data[table].push(obj);
             }
             await this.#dbClient.write();
         } catch (e) {
@@ -96,15 +83,10 @@ class DatabaseAdapter {
         }
     }
 
-    async removeElementByIdFrom(table, id, subtable) {
+    async removeElementByIdFrom(table, id) {
         try {
-            if (subtable == null) {
-                const newData = this.#dbClient.data[table].filter(obj => obj.id !== id);
-                this.#dbClient.data[table] = newData;
-            } else {
-                const newData = this.#dbClient.data[table][subtable].filter(obj => obj.id !== id);
-                this.#dbClient.data[table][subtable] = newData;
-            }
+            const newData = this.#dbClient.data[table].filter(obj => obj.id !== id);
+            this.#dbClient.data[table] = newData;
             await this.#dbClient.write();
         } catch (e) {
             throw e;
