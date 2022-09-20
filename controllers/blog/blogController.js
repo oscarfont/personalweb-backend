@@ -37,7 +37,10 @@ export const getAllBlogsOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
         // get all blogs of category
         const blogs = await dbAdapter.findOf('blogs', { category: category });
 
-        return res.json(formatter.formatOKResponse(200, blogs));
+        // limit fields to be returned
+        const blogSummaries = blogs.map((blog) => { return { id: blog.id, title: blog.title, summary: blog.summary, category: blog.category } });
+
+        return res.json(formatter.formatOKResponse(200, blogSummaries));
     } catch (e) {
         return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }
@@ -46,17 +49,16 @@ export const getAllBlogsOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
 export const getBlogDetail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
         // get category and id of the post to be retrieved
-        const category = req.query.category;
-        const id = req.query.id;
+        const { id, category } = req.body;
 
         // get all blogs of category
         const blogs = await dbAdapter.findOf('blogs', { category: category });
-        const post = blogs.find(blog => blog.id == id);
+        const post = blogs.filter((blog) => blog.id === id)[0];
 
         // if no post has been found return error
         if (!post) throw new Error('Blog post with id: ' + id + ' not found');
 
-        return res.json(formatter.formatOKResponse(200, blogs));
+        return res.json(formatter.formatOKResponse(200, post));
     } catch (e) {
         return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }

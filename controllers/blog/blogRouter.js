@@ -30,8 +30,8 @@ class BlogRouter {
                 handler: getAllBlogCategories
             },
             {
-                path: '/get/:category?:id',
-                method: MethodEnum.GET,
+                path: '/get/detail',
+                method: MethodEnum.POST,
                 handler: getBlogDetail
             },
             {
