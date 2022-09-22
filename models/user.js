@@ -12,6 +12,7 @@
 
 class User {
     email;
+    name;
     role;
     password;
     #jwt;
@@ -35,6 +36,14 @@ class User {
 
     getPassword() {
         return this.password;
+    }
+
+    setName(name) {
+        this.name = name;
+    }
+
+    getName() {
+        return this.name;
     }
 }
 

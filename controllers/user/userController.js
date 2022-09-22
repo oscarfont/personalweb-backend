@@ -15,12 +15,13 @@ import { formatter } from "../../utils/formatter.js";
 export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
         // get request user data
-        const { email, password } = req.body;
+        const { name, email, password } = req.body;
 
         // create user model and set encrypted pass
         const user = new User(email, 'admin');
         const encryptedPass = cryptoAdapter.encrypt(password);
         user.setPassword(encryptedPass);
+        user.setName(name);
 
         // insert user model to db
         await dbAdapter.insertInto('user', user);
@@ -29,7 +30,7 @@ export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
         const jwt = jwtAdapter.generateToken(user.role);
         user.setJWT(jwt);
 
-        return res.json(formatter.formatOKResponse(200, { email: user.email, role: user.role, jwt: user.getJWT() }));
+        return res.json(formatter.formatOKResponse(200, { name: user.name, email: user.email, role: user.role, jwt: user.getJWT() }));
     } catch (e) {
         return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }
@@ -47,6 +48,7 @@ export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
         // if found create user model
         const user = new User(userData.email, userData.role);
         user.setPassword(userData.password);
+        user.setName(userData.name);
 
         // check if user can be authenticated
         const isAuthorized = cryptoAdapter.checkEncryption(user.getPassword(), password);
@@ -56,7 +58,7 @@ export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
         const jwt = jwtAdapter.generateToken(user.role);
         user.setJWT(jwt);
 
-        return res.json(formatter.formatOKResponse(200, { email: user.email, role: user.role, jwt: user.getJWT() }));
+        return res.json(formatter.formatOKResponse(200, { name: user.name, email: user.email, role: user.role, jwt: user.getJWT() }));
     } catch (e) {
         return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }
