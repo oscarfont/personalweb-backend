@@ -89,7 +89,7 @@ export const removeBlog = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, r
         // TODO check JWT token
 
         // get category and id of blog post
-        const id = req.query.id;
+        const id = req.params.id;
 
         // remove element from db
         await dbAdapter.removeElementByIdFrom('blogs', id);
