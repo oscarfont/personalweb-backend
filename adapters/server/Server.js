@@ -1,7 +1,9 @@
 import express from 'express';
 import cors from 'cors';
+//import helmet from 'helmet'; // TODO uncomment import statement
 import { blogRouter } from "../../controllers/blog/blogRouter.js";
 import { userRouter } from '../../controllers/user/userRouter.js';
+import { utilsRouter } from '../../controllers/utils/utilsRouter.js';
 import { MethodEnum } from "./MethodEnum.js";
 
 /**
@@ -35,7 +37,10 @@ class ServerAdapter {
     start() {
         this.#server.listen(this.#port);
         this.#server.use(express.json());
-        this.#server.use(cors());
+        //this.#server.use(helmet());
+        this.#server.use(cors(/*{
+            origin: ['localhost:3000'] // TODO: add allowed origin url
+        }*/));
         this.registeRouters();
     }
 
@@ -68,9 +73,15 @@ class ServerAdapter {
             this.registerRoute(usrRouter, route);
         });
 
+        const utlsRouter = express.Router();
+        utilsRouter.routes.forEach((route) => {
+            this.registerRoute(utlsRouter, route);
+        });
+
 
         this.#server.use(blogRouter.prefix, bgRouter);
         this.#server.use(userRouter.prefix, usrRouter);
+        this.#server.use(utilsRouter.prefix, utlsRouter)
     }
 
     // getters
