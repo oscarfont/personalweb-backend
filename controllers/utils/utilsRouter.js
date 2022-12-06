@@ -1,5 +1,5 @@
 import { MethodEnum } from "../../adapters/server/MethodEnum.js";
-import { sendMail } from "./utilsController.js";
+import { sendMail, uploadImage } from "./utilsController.js";
 
 /**
  * @author Óscar Font
@@ -23,6 +23,11 @@ class UtilsRouter {
                 path: '/sendMail',
                 method: MethodEnum.POST,
                 handler: sendMail
+            },
+            {
+                path: '/uploadImage',
+                method: MethodEnum.POST,
+                handler: uploadImage
             }
         ]
     }

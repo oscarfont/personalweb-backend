@@ -10,6 +10,7 @@
  */
 
 import NodeMailerAdapter from "../../adapters/nodemailer/Mailer.js";
+import FroalaAdapter from "../../adapters/froalasdk/FroalaAdapter.js";
 import { formatter } from "../../utils/formatter.js";
 
 export const sendMail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
@@ -26,6 +27,22 @@ export const sendMail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req
         const info = await mailAdapter.sendEmail(from, subject, text);
 
         return res.json(formatter.formatOKResponse(200, "Message with " + info.messageId + " sent successfully"));
+    } catch (e) {
+        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+    }
+};
+
+export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+    try {
+        // TODO check user is logged in
+
+        // create node mailer instance
+        const froalaAdapter = new FroalaAdapter();
+
+        // process image upload
+        const result = froalaAdapter.processImage(req);
+
+        return res.json(formatter.formatOKResponse(200, "Image uploaded successfully!"));
     } catch (e) {
         return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }
