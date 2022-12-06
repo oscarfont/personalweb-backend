@@ -1,3 +1,5 @@
+import FroalaAdapter from "../../adapters/froalasdk/FroalaAdapter.js";
+
 /**
  * @author Óscar Font
  * =====================
@@ -90,6 +92,18 @@ export const removeBlog = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, r
 
         // get category and id of blog post
         const id = req.params.id;
+
+        // find blog to remove in db
+        const blogs = await dbAdapter.getAllOf('blogs');
+        const post = blogs.filter((blog) => blog.id === id)[0];
+
+        // remove media from server
+        if (post?.media && post?.media.length > 0) {
+            const froalaAdapter = new FroalaAdapter();
+            for (let i = 0; i < post.media.length; i++) {
+                await froalaAdapter.deleteImage(post.media[i]);
+            }
+        }
 
         // remove element from db
         await dbAdapter.removeElementByIdFrom('blogs', id);
