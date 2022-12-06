@@ -1,3 +1,4 @@
+import e from 'cors';
 import FroalaEditor from 'wysiwyg-editor-node-sdk/lib/froalaEditor.js';
 
 /**
@@ -31,14 +32,18 @@ class FroalaAdapter {
         this.imagesDirectory = newDir;
     }
 
-    processImage(request) {
-        this.#froalaSdk.Image.upload(request, this.imagesDirectory, (error, data) => {
-            // if there is an error in image processing
-            if (error) {
-                throw new Error(JSON.stringify(error));
-            }
+    async processImage(request) {
+        return new Promise((resolve, reject) => {
+            this.#froalaSdk.Image.upload(request, this.imagesDirectory, (error, data) => {
+                if (error) {
+                    return reject(error);
+                }
 
-            return data;
+                // TODO change this to something more elegant
+                const newPath = data?.link.split('/')[2];
+
+                resolve({ link: newPath });
+            });
         });
     }
 }

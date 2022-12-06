@@ -40,9 +40,9 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
         const froalaAdapter = new FroalaAdapter();
 
         // process image upload
-        const result = froalaAdapter.processImage(req);
+        const result = await froalaAdapter.processImage(req);
 
-        return res.json(formatter.formatOKResponse(200, "Image uploaded successfully!"));
+        return res.json(formatter.formatOKResponse(200, result?.link));
     } catch (e) {
         return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }

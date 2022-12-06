@@ -37,6 +37,7 @@ class ServerAdapter {
     start() {
         this.#server.listen(this.#port);
         this.#server.use(express.json());
+        this.#server.use(express.static('public'));
         //this.#server.use(helmet());
         this.#server.use(cors(/*{
             origin: ['localhost:3000'] // TODO: add allowed origin url

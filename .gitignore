@@ -1,6 +1,7 @@
 #DIR
 node_modules
 adapters/database/*.json
+/public/*
 
 #FILES
 package-lock.json
