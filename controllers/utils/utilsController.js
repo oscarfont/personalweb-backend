@@ -47,3 +47,21 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
         return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }
 };
+
+export const deleteImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+    try {
+        // TODO check user is logged in
+
+        const fileName = req.body.src;
+
+        // create node mailer instance
+        const froalaAdapter = new FroalaAdapter();
+
+        // process image upload
+        const result = await froalaAdapter.deleteImage(fileName);
+
+        return res.json(formatter.formatOKResponse(200, result?.link));
+    } catch (e) {
+        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+    }
+};

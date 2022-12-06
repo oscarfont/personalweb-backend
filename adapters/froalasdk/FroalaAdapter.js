@@ -34,7 +34,10 @@ class FroalaAdapter {
 
     async processImage(request) {
         return new Promise((resolve, reject) => {
-            this.#froalaSdk.Image.upload(request, this.imagesDirectory, (error, data) => {
+            var options = {
+                resize: [512, 512]
+            }
+            this.#froalaSdk.Image.upload(request, this.imagesDirectory, options, (error, data) => {
                 if (error) {
                     return reject(error);
                 }
@@ -43,6 +46,18 @@ class FroalaAdapter {
                 const newPath = data?.link.split('/')[2];
 
                 resolve({ link: newPath });
+            });
+        });
+    }
+
+    async deleteImage(fileName) {
+        return new Promise((resolve, reject) => {
+            this.#froalaSdk.Image.delete(fileName, (error) => {
+                if (error) {
+                    return reject(error);
+                }
+
+                resolve();
             });
         });
     }
