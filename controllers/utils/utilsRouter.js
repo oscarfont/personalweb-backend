@@ -31,7 +31,7 @@ class UtilsRouter {
             },
             {
                 path: '/deleteImage',
-                method: MethodEnum.DELETE,
+                method: MethodEnum.POST,
                 handler: deleteImage
             }
         ]
