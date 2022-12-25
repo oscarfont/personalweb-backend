@@ -31,11 +31,11 @@ class DatabaseAdapter {
         try {
             const data = {
                 user: [],
-                blogs: []
+                blog: []
             }
             this.#dbClient.data = data;
             await this.#dbClient.write();
-            this.#logger.log(DatabaseAdapter.name, LogLevel.INFO, 'User and Post collections successfully created');
+            this.#logger.log(DatabaseAdapter.name, LogLevel.INFO, 'User and Blog collections successfully created');
         } catch (e) {
             throw e
         }
@@ -70,7 +70,7 @@ class DatabaseAdapter {
     async insertInto(table, obj) {
         try {
             // generate unique id before insert of data
-            obj.id = uuidv4();
+            obj.id = this.generateId();
             const data = this.#dbClient.data[table];
             if (!data) {
                 this.#dbClient.data[table] = [obj];

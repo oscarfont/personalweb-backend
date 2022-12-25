@@ -1,4 +1,5 @@
 import FroalaAdapter from "../../adapters/froalasdk/FroalaAdapter.js";
+import BlogPost from "../../models/blogpost.js";
 
 /**
  * @author Óscar Font
@@ -16,7 +17,7 @@ import { formatter } from "../../utils/formatter.js";
 export const getAllBlogCategories = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
         // get all blogs and categories
-        const blogs = await dbAdapter.getAllOf('blogs');
+        const blogs = await dbAdapter.getAllOf('blog');
 
         // get all categories of blogs
         const categories = new Set();
@@ -37,10 +38,14 @@ export const getAllBlogsOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
         const category = req.query.category;
 
         // get all blogs of category
-        const blogs = await dbAdapter.findOf('blogs', { category: category });
+        const blogs = await dbAdapter.findOf('blog', { category: category });
 
         // limit fields to be returned
-        const blogSummaries = blogs.map((blog) => { return { id: blog.id, title: blog.title, summary: blog.summary, category: blog.category } });
+        const blogSummaries = blogs.map((blog) => {
+            const post = new BlogPost(blog.category, blog.title, blog.summary, undefined, blog.id);
+            post.setCreatedAt(blog.createdAt);
+            return post;
+        }).sort((postA, postB) => postB.createdAt - postA.createdAt);
 
         return res.json(formatter.formatOKResponse(200, blogSummaries));
     } catch (e) {
@@ -54,13 +59,18 @@ export const getBlogDetail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter
         const { id, category } = req.body;
 
         // get all blogs of category
-        const blogs = await dbAdapter.findOf('blogs', { category: category });
-        const post = blogs.filter((blog) => blog.id === id)[0];
+        const blogs = await dbAdapter.findOf('blog', { category: category });
+        const { title, summary, content, createdAt, media } = blogs.filter((blog) => blog.id === id)[0];
+
+        // create model object of the post
+        const blogPost = new BlogPost(category, title, summary, content);
+        blogPost.setCreatedAt(createdAt);
+        blogPost.setMedia(media);
 
         // if no post has been found return error
-        if (!post) throw new Error('Blog post with id: ' + id + ' not found');
+        if (!blogPost) throw new Error('Blog post with id: ' + id + ' not found');
 
-        return res.json(formatter.formatOKResponse(200, post));
+        return res.json(formatter.formatOKResponse(200, blogPost));
     } catch (e) {
         return res.status(500).send(formatter.formatErrorResponse(500, e.message));
     }
@@ -71,14 +81,17 @@ export const publishBlogOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
         // TODO check JWT token
 
         // get category and blog post
-        const post = req.body;
+        const { title, summary, content, media } = req.body;
         const category = req.query.category;
 
-        // add category to post
-        post.category = category;
+        const blogPost = new BlogPost(category, title, summary, content);
+
+        // add date to the post
+        blogPost.setCreatedAt(new Date().getTime())
+        blogPost.setMedia(media);
 
         // insert object into db
-        await dbAdapter.insertInto('blogs', post);
+        await dbAdapter.insertInto('blog', blogPost);
 
         return res.json(formatter.formatOKResponse(200, 'Blog post published sucessfully!'));
     } catch (e) {
@@ -94,19 +107,24 @@ export const removeBlog = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, r
         const id = req.params.id;
 
         // find blog to remove in db
-        const blogs = await dbAdapter.getAllOf('blogs');
-        const post = blogs.filter((blog) => blog.id === id)[0];
+        const blogs = await dbAdapter.getAllOf('blog');
+        const { category, title, summary, content, createdAt, media } = blogs.filter((blog) => blog.id === id)[0];
+
+        // create model object of the post
+        const blogPost = new BlogPost(category, title, summary, content);
+        blogPost.setCreatedAt(createdAt);
+        blogPost.setMedia(media);
 
         // remove media from server
-        if (post?.media && post?.media.length > 0) {
+        if (blogPost?.media && blogPost?.media.length > 0) {
             const froalaAdapter = new FroalaAdapter();
-            for (let i = 0; i < post.media.length; i++) {
-                await froalaAdapter.deleteImage(post.media[i]);
+            for (let i = 0; i < blogPost.media.length; i++) {
+                await froalaAdapter.deleteImage(blogPost.media[i]);
             }
         }
 
         // remove element from db
-        await dbAdapter.removeElementByIdFrom('blogs', id);
+        await dbAdapter.removeElementByIdFrom('blog', id);
 
         return res.json(formatter.formatOKResponse(200, 'Blog post removed successfully!'));
     } catch (e) {
