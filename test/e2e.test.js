@@ -1,8 +1,8 @@
-import MockDb from '../adapters/database/MockDb.js';
 import LoggerAdapter from '../adapters/logger/Logger.js';
 import ServerAdapter from '../adapters/server/Server.js';
 import JWTAdapter from '../adapters/auth/JWTAdapter.js';
 import CryptoAdapter from '../adapters/auth/CryptoAdapter.js';
+import MockDb from '../adapters/database/MockDb.js';
 import request from 'supertest';
 
 describe("Testing the blog endpoints", () => {
@@ -10,8 +10,7 @@ describe("Testing the blog endpoints", () => {
     let server = undefined;
     let postId = undefined;
 
-    // start the server before executing all the tests
-    beforeAll(() => {
+    beforeAll(async () => {
         // init logger
         const logger = new LoggerAdapter();
 
@@ -24,8 +23,7 @@ describe("Testing the blog endpoints", () => {
         const cryptoAdapter = new CryptoAdapter(logger);
 
         // init server
-        const port = 3000;
-        server = new ServerAdapter(port, logger, db, jwtAdapter, cryptoAdapter);
+        server = new ServerAdapter(3000, logger, db, jwtAdapter, cryptoAdapter);
         server.start();
     });
 
@@ -37,7 +35,7 @@ describe("Testing the blog endpoints", () => {
             content: "lorem ipsum lore lore ipsum lore",
             media: []
         }
-        const response = await request(server.server).post("/blog/publish?category=IT%20Blog", body);
+        const response = await request(server.server).post("/blog/publish?category=IT%20Blog").send(body);
         expect(response.statusCode).toBe(200);
     });
 
@@ -53,5 +51,29 @@ describe("Testing the blog endpoints", () => {
         const response = await request(server.server).delete(`/blog/remove/${postId}`);
         expect(response.body.status).toBe("success");
         expect(response.statusCode).toBe(200);
+    });
+
+    test("The POST /user/signUp shall register a user in the system successfully", async () => {
+        const body = {
+            name: "Test",
+            email: "test.test@testmail.com",
+            password: "TesT1234"
+        }
+        const response = await request(server.server).post("/user/signUp").send(body);
+        expect(response.body.status).toBe("success");
+        expect(response.body.statusCode).toBe(200);
+        expect(response.body.data.email).toBe("test.test@testmail.com");
+        expect(response.body.data.jwt.length).toBeGreaterThan(0);
+    });
+
+    test("The POST /user/signIn shall register a user in the system successfully", async () => {
+        const body = {
+            email: "test.test@testmail.com",
+            password: "TesT1234"
+        }
+        const response = await request(server.server).post("/user/signIn").send(body);
+        expect(response.body.status).toBe("success");
+        expect(response.body.statusCode).toBe(200);
+        expect(response.body.data.jwt.length).toBeGreaterThan(0);
     });
 });
