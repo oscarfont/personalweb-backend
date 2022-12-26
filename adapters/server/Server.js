@@ -5,6 +5,7 @@ import { blogRouter } from "../../controllers/blog/blogRouter.js";
 import { userRouter } from '../../controllers/user/userRouter.js';
 import { utilsRouter } from '../../controllers/utils/utilsRouter.js';
 import { MethodEnum } from "./MethodEnum.js";
+import { LogLevel } from '../logger/LogLevel.js';
 
 /**
  * @author Óscar Font
@@ -36,6 +37,7 @@ class ServerAdapter {
 
     start() {
         this.#server.listen(this.#port);
+        this.#logger.log(ServerAdapter.name, LogLevel.DEBUG, `Server started successfully at port ${this.#port}`);
         this.#server.use(express.json());
         this.#server.use(express.static('public'));
         //this.#server.use(helmet());
