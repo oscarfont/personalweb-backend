@@ -2,6 +2,7 @@
 node_modules
 adapters/database/*.json
 /public/*
+coverage
 
 #FILES
 package-lock.json

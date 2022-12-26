@@ -5,7 +5,7 @@
     "description": "First version of a backend for my personal web page and blog app",
     "main": "index.js",
     "scripts": {
-        "test": "jest --verbose --runInBand --forceExit",
+        "test": "jest --verbose --coverage --runInBand --forceExit",
         "start": "node index.js"
     },
     "author": "ofontg",
@@ -25,6 +25,7 @@
     "devDependencies": {
         "@babel/preset-env": "^7.20.2",
         "babel-jest": "^29.3.1",
-        "jest": "^29.3.1"
+        "jest": "^29.3.1",
+        "supertest": "^6.3.3"
     }
 }
