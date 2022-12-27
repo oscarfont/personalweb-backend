@@ -15,8 +15,6 @@ import { formatter } from "../../utils/formatter.js";
 
 export const sendMail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
-        // TODO check user is logged in
-
         // extract data from req
         const { from, subject, text } = req.body;
 
@@ -34,7 +32,11 @@ export const sendMail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req
 
 export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
-        // TODO check user is logged in
+        // check user is logged in
+        const authHeader = req.headers.authorization;
+        const jwtToken = authHeader.slice(7, authHeader.length - 1);
+
+        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new Error("Authorization header must be present and valid");
 
         // create node mailer instance
         const froalaAdapter = new FroalaAdapter();
@@ -50,7 +52,11 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
 
 export const deleteImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
-        // TODO check user is logged in
+        // check user is logged in
+        const authHeader = req.headers.authorization;
+        const jwtToken = authHeader.slice(7, authHeader.length - 1);
+
+        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new Error("Authorization header must be present and valid");
 
         const fileName = req.body.src;
 
