@@ -12,7 +12,6 @@
 class Formatter {
     serverName;
     version;
-    statusCode;
     status;
     error;
     data;
@@ -22,18 +21,16 @@ class Formatter {
         this.version = version;
     }
 
-    formatOKResponse(statusCode, data) {
+    formatSuccessfulResponse(data) {
         this.data = data;
-        this.statusCode = statusCode;
 
-        return { server: this.serverName, version: this.version, statusCode: this.statusCode, status: 'success', data: this.data }
+        return { server: this.serverName, version: this.version, status: 'success', data: this.data }
     }
 
-    formatErrorResponse(statusCode, data) {
+    formatErrorResponse(data) {
         this.data = data;
-        this.statusCode = statusCode;
 
-        return { server: this.serverName, version: this.version, statusCode: this.statusCode, status: 'error', message: this.data }
+        return { server: this.serverName, version: this.version, status: 'error', message: this.data }
     }
 }
 

@@ -36,13 +36,13 @@ describe("Testing the blog endpoints", () => {
             media: []
         }
         const response = await request(server.server).post("/blog/publish?category=IT%20Blog").send(body);
-        expect(response.statusCode).toBe(200);
+        expect(response.status).toBe(200);
     });
 
     test("The GET /blog/get/all?category shall return return the recently published test sucessfully", async () => {
         const response = await request(server.server).get("/blog/get/all?category=IT%20Blog");
         expect(response.body.status).toBe("success");
-        expect(response.statusCode).toBe(200);
+        expect(response.status).toBe(200);
         expect(response.body.data.length).toBeGreaterThan(0);
         postId = response.body.data[0]?.id;
     });
@@ -50,7 +50,7 @@ describe("Testing the blog endpoints", () => {
     test("The DELETE /blog/remove/id shall remove the recently published post sucessfully", async () => {
         const response = await request(server.server).delete(`/blog/remove/${postId}`);
         expect(response.body.status).toBe("success");
-        expect(response.statusCode).toBe(200);
+        expect(response.status).toBe(200);
     });
 
     test("The POST /user/signUp shall register a user in the system successfully", async () => {
@@ -61,7 +61,7 @@ describe("Testing the blog endpoints", () => {
         }
         const response = await request(server.server).post("/user/signUp").send(body);
         expect(response.body.status).toBe("success");
-        expect(response.body.statusCode).toBe(200);
+        expect(response.status).toBe(200);
         expect(response.body.data.email).toBe("test.test@testmail.com");
         expect(response.body.data.jwt.length).toBeGreaterThan(0);
     });
@@ -73,7 +73,7 @@ describe("Testing the blog endpoints", () => {
         }
         const response = await request(server.server).post("/user/signIn").send(body);
         expect(response.body.status).toBe("success");
-        expect(response.body.statusCode).toBe(200);
+        expect(response.status).toBe(200);
         expect(response.body.data.jwt.length).toBeGreaterThan(0);
     });
 });

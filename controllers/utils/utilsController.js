@@ -24,9 +24,9 @@ export const sendMail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req
         // send email
         const info = await mailAdapter.sendEmail(from, subject, text);
 
-        return res.json(formatter.formatOKResponse(200, "Message with " + info.messageId + " sent successfully"));
+        return res.json(formatter.formatSuccessfulResponse("Message with " + info.messageId + " sent successfully"));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+        return res.status(500).send(formatter.formatErrorResponse(e.message));
     }
 };
 
@@ -44,9 +44,9 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
         // process image upload
         const result = await froalaAdapter.processImage(req);
 
-        return res.json(formatter.formatOKResponse(200, result?.link));
+        return res.json(formatter.formatSuccessfulResponse(result?.link));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+        return res.status(500).send(formatter.formatErrorResponse(e.message));
     }
 };
 
@@ -66,8 +66,8 @@ export const deleteImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
         // process image upload
         const result = await froalaAdapter.deleteImage(fileName);
 
-        return res.json(formatter.formatOKResponse(200, result?.link));
+        return res.json(formatter.formatSuccessfulResponse(result?.link));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+        return res.status(500).send(formatter.formatErrorResponse(e.message));
     }
 };

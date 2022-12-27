@@ -30,9 +30,9 @@ export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
         const jwt = jwtAdapter.generateToken(user.role);
         user.setJWT(jwt);
 
-        return res.json(formatter.formatOKResponse(200, { name: user.name, email: user.email, role: user.role, jwt: user.getJWT() }));
+        return res.json(formatter.formatSuccessfulResponse({ name: user.name, email: user.email, role: user.role, jwt: user.getJWT() }));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+        return res.status(500).send(formatter.formatErrorResponse(e.message));
     }
 };
 
@@ -58,17 +58,17 @@ export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
         const jwt = jwtAdapter.generateToken(user.role);
         user.setJWT(jwt);
 
-        return res.json(formatter.formatOKResponse(200, { name: user.name, email: user.email, role: user.role, jwt: user.getJWT() }));
+        return res.json(formatter.formatSuccessfulResponse({ name: user.name, email: user.email, role: user.role, jwt: user.getJWT() }));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+        return res.status(500).send(formatter.formatErrorResponse(e.message));
     }
 };
 
 export const signOut = (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
     try {
         // client will remove user token and call this endpoint
-        return res.json(formatter.formatOKResponse(200, 'User signed out successfully'));
+        return res.json(formatter.formatSuccessfulResponse('User signed out successfully'));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+        return res.status(500).send(formatter.formatErrorResponse(e.message));
     }
 };

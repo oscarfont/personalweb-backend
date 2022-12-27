@@ -25,9 +25,9 @@ export const getAllBlogCategories = async (logger, dbAdapter, jwtAdapter, crypto
             categories.add(post.category);
         });
 
-        return res.json(formatter.formatOKResponse(200, Array.from(categories)));
+        return res.json(formatter.formatSuccessfulResponse(Array.from(categories)));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+        return res.status(500).send(formatter.formatErrorResponse(e.message));
     }
 };
 
@@ -47,9 +47,9 @@ export const getAllBlogsOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
             return post;
         }).sort((postA, postB) => postB.createdAt - postA.createdAt);
 
-        return res.json(formatter.formatOKResponse(200, blogSummaries));
+        return res.json(formatter.formatSuccessfulResponse(blogSummaries));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+        return res.status(500).send(formatter.formatErrorResponse(e.message));
     }
 };
 
@@ -70,9 +70,9 @@ export const getBlogDetail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter
         // if no post has been found return error
         if (!blogPost) throw new Error('Blog post with id: ' + id + ' not found');
 
-        return res.json(formatter.formatOKResponse(200, blogPost));
+        return res.json(formatter.formatSuccessfulResponse(blogPost));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+        return res.status(500).send(formatter.formatErrorResponse(e.message));
     }
 };
 
@@ -97,9 +97,9 @@ export const publishBlogOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
         // insert object into db
         await dbAdapter.insertInto('blog', blogPost);
 
-        return res.json(formatter.formatOKResponse(200, 'Blog post published sucessfully!'));
+        return res.json(formatter.formatSuccessfulResponse('Blog post published sucessfully!'));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+        return res.status(500).send(formatter.formatErrorResponse(e.message));
     }
 };
 
@@ -134,8 +134,8 @@ export const removeBlog = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, r
         // remove element from db
         await dbAdapter.removeElementByIdFrom('blog', id);
 
-        return res.json(formatter.formatOKResponse(200, 'Blog post removed successfully!'));
+        return res.json(formatter.formatSuccessfulResponse('Blog post removed successfully!'));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(500, e.message));
+        return res.status(500).send(formatter.formatErrorResponse(e.message));
     }
 };
