@@ -35,9 +35,9 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
     try {
         // check user is logged in
         const authHeader = req.headers.authorization;
-        const jwtToken = authHeader?.slice(7, authHeader.length - 1);
+        const jwtToken = authHeader?.slice(7, authHeader.length);
 
-        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
+        if (!jwtToken || !jwtAdapter.verifyToken(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
 
         // create node mailer instance
         const froalaAdapter = new FroalaAdapter();
@@ -55,9 +55,9 @@ export const deleteImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
     try {
         // check user is logged in
         const authHeader = req.headers.authorization;
-        const jwtToken = authHeader?.slice(7, authHeader.length - 1);
+        const jwtToken = authHeader?.slice(7, authHeader.length);
 
-        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
+        if (!jwtToken || !jwtAdapter.verifyToken(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
 
         const fileName = req.body.src;
 

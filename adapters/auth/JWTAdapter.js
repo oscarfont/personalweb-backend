@@ -26,9 +26,7 @@ class JWTAdapter {
     generateToken(role) {
         try {
             // TODO obtain secret from ENV var
-            return this.#jwtInstance.sign({
-                role: role
-            }, 'mysecret', { expiresIn: this.expiresIn });
+            return this.#jwtInstance.sign({}, 'mysecret', { expiresIn: this.expiresIn });
         } catch (err) {
             throw err;
         }

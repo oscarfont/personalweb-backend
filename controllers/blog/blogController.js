@@ -85,9 +85,9 @@ export const publishBlogOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
     try {
         //check JWT token
         const authHeader = req.headers.authorization;
-        const jwtToken = authHeader?.slice(7, authHeader.length - 1);
+        const jwtToken = authHeader?.slice(7, authHeader.length);
 
-        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
+        if (!jwtToken || !jwtAdapter.verifyToken(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
 
         // get category and blog post
         const { title, summary, content, media } = req.body;
@@ -114,9 +114,9 @@ export const removeBlog = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, r
     try {
         // check JWT token
         const authHeader = req.headers.authorization;
-        const jwtToken = authHeader?.slice(7, authHeader.length - 1);
+        const jwtToken = authHeader?.slice(7, authHeader.length);
 
-        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
+        if (!jwtToken || !jwtAdapter.verifyToken(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
 
         // get category and id of blog post
         const id = req.params.id;
