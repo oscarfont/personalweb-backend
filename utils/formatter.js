@@ -34,5 +34,4 @@ class Formatter {
     }
 }
 
-const formatter = new Formatter('Personalweb-backend', '0.0.1');
-export { formatter }
+export const formatter = new Formatter('Personalweb-backend', '0.0.1');

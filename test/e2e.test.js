@@ -4,6 +4,7 @@ import JWTAdapter from '../adapters/auth/JWTAdapter.js';
 import CryptoAdapter from '../adapters/auth/CryptoAdapter.js';
 import MockDb from '../adapters/database/MockDb.js';
 import request from 'supertest';
+import { errorHandler } from '../utils/errorhandler.js';
 
 describe("Testing the blog endpoints", () => {
 
@@ -23,7 +24,7 @@ describe("Testing the blog endpoints", () => {
         const cryptoAdapter = new CryptoAdapter(logger);
 
         // init server
-        server = new ServerAdapter(3000, logger, db, jwtAdapter, cryptoAdapter);
+        server = new ServerAdapter(3000, logger, db, jwtAdapter, cryptoAdapter, errorHandler);
         server.start();
     });
 

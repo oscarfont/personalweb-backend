@@ -11,9 +11,10 @@
 
 import NodeMailerAdapter from "../../adapters/nodemailer/Mailer.js";
 import FroalaAdapter from "../../adapters/froalasdk/FroalaAdapter.js";
+import InvalidRequest from "../../models/errors/InvalidRequest.js";
 import { formatter } from "../../utils/formatter.js";
 
-export const sendMail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const sendMail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         // extract data from req
         const { from, subject, text } = req.body;
@@ -26,17 +27,17 @@ export const sendMail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req
 
         return res.json(formatter.formatSuccessfulResponse("Message with " + info.messageId + " sent successfully"));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(e.message));
+        next(e);
     }
 };
 
-export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         // check user is logged in
         const authHeader = req.headers.authorization;
-        const jwtToken = authHeader.slice(7, authHeader.length - 1);
+        const jwtToken = authHeader?.slice(7, authHeader.length - 1);
 
-        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new Error("Authorization header must be present and valid");
+        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
 
         // create node mailer instance
         const froalaAdapter = new FroalaAdapter();
@@ -46,17 +47,17 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
 
         return res.json(formatter.formatSuccessfulResponse(result?.link));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(e.message));
+        next(e);
     }
 };
 
-export const deleteImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const deleteImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         // check user is logged in
         const authHeader = req.headers.authorization;
-        const jwtToken = authHeader.slice(7, authHeader.length - 1);
+        const jwtToken = authHeader?.slice(7, authHeader.length - 1);
 
-        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new Error("Authorization header must be present and valid");
+        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
 
         const fileName = req.body.src;
 
@@ -68,6 +69,6 @@ export const deleteImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
 
         return res.json(formatter.formatSuccessfulResponse(result?.link));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(e.message));
+        next(e);
     }
 };

@@ -11,11 +11,14 @@
 
 import User from "../../models/user.js";
 import { formatter } from "../../utils/formatter.js";
+import InvalidRequest from "../../models/errors/InvalidRequest.js";
+import AuthenticationError from "../../models/errors/AuthenticationError.js";
 
-export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         // get request user data
         const { name, email, password } = req.body;
+        if (!name || !email || !password) throw new InvalidRequest("Missing some of the fields in the request body");
 
         // create user model and set encrypted pass
         const user = new User(email, 'admin');
@@ -32,18 +35,18 @@ export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
 
         return res.json(formatter.formatSuccessfulResponse({ name: user.name, email: user.email, role: user.role, jwt: user.getJWT() }));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(e.message));
+        next(e);
     }
 };
 
-export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         // get user credentials
         const { email, password } = req.body;
 
         // obtain users data
         const userData = dbAdapter.findOf('user', { email: email })[0];
-        if (!userData) throw new Error('There is no user registered for the current email. Please try again.');
+        if (!userData) throw new AuthenticationError('There is no user registered for the current email. Please try again.');
 
         // if found create user model
         const user = new User(userData.email, userData.role);
@@ -52,7 +55,7 @@ export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
 
         // check if user can be authenticated
         const isAuthorized = cryptoAdapter.checkEncryption(user.getPassword(), password);
-        if (!isAuthorized) throw new Error('Incorrect password. Please try again.');
+        if (!isAuthorized) throw new AuthenticationError('Incorrect password. Please try again.');
 
         // if user is authenticated generate jwt token
         const jwt = jwtAdapter.generateToken(user.role);
@@ -60,15 +63,15 @@ export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
 
         return res.json(formatter.formatSuccessfulResponse({ name: user.name, email: user.email, role: user.role, jwt: user.getJWT() }));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(e.message));
+        next(e);
     }
 };
 
-export const signOut = (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const signOut = (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         // client will remove user token and call this endpoint
         return res.json(formatter.formatSuccessfulResponse('User signed out successfully'));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(e.message));
+        next(e);
     }
 };

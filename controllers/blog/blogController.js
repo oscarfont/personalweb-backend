@@ -1,5 +1,7 @@
 import FroalaAdapter from "../../adapters/froalasdk/FroalaAdapter.js";
 import BlogPost from "../../models/blogpost.js";
+import InvalidRequest from "../../models/errors/InvalidRequest.js";
+import NotFound from "../../models/errors/NotFound.js";
 
 /**
  * @author Óscar Font
@@ -14,7 +16,7 @@ import BlogPost from "../../models/blogpost.js";
 
 import { formatter } from "../../utils/formatter.js";
 
-export const getAllBlogCategories = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const getAllBlogCategories = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         // get all blogs and categories
         const blogs = await dbAdapter.getAllOf('blog');
@@ -27,15 +29,16 @@ export const getAllBlogCategories = async (logger, dbAdapter, jwtAdapter, crypto
 
         return res.json(formatter.formatSuccessfulResponse(Array.from(categories)));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(e.message));
+        next(e);
     }
 };
 
 
-export const getAllBlogsOfCategory = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const getAllBlogsOfCategory = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         // get category of blogs to be retrieved
         const category = req.query.category;
+        if (!category) throw new InvalidRequest("Missing category request parameter");
 
         // get all blogs of category
         const blogs = await dbAdapter.findOf('blog', { category: category });
@@ -49,44 +52,48 @@ export const getAllBlogsOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
 
         return res.json(formatter.formatSuccessfulResponse(blogSummaries));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(e.message));
+        next(e);
     }
 };
 
-export const getBlogDetail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const getBlogDetail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         // get category and id of the post to be retrieved
         const { id, category } = req.body;
+        if (!id || !category) throw new InvalidRequest("Missing id and category fields in the request body");
 
         // get all blogs of category
         const blogs = await dbAdapter.findOf('blog', { category: category });
-        const { title, summary, content, createdAt, media } = blogs.filter((blog) => blog.id === id)[0];
+
+        // if no post has been found return error
+        if (!blogs.length) throw new NotFound('Blog post with id: ' + id + ' not found');
+
+        const { title, summary, content, createdAt, media } = blogs?.filter((blog) => blog.id === id)[0];
 
         // create model object of the post
         const blogPost = new BlogPost(category, title, summary, content);
         blogPost.setCreatedAt(createdAt);
         blogPost.setMedia(media);
 
-        // if no post has been found return error
-        if (!blogPost) throw new Error('Blog post with id: ' + id + ' not found');
-
         return res.json(formatter.formatSuccessfulResponse(blogPost));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(e.message));
+        next(e);
     }
 };
 
-export const publishBlogOfCategory = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const publishBlogOfCategory = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         //check JWT token
         const authHeader = req.headers.authorization;
-        const jwtToken = authHeader.slice(7, authHeader.length - 1);
+        const jwtToken = authHeader?.slice(7, authHeader.length - 1);
 
-        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new Error("Authorization header must be present and valid");
+        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
 
         // get category and blog post
         const { title, summary, content, media } = req.body;
         const category = req.query.category;
+
+        if (!category || !title || !summary || !content || !media) throw new InvalidRequest("The request is missing some parameters");
 
         const blogPost = new BlogPost(category, title, summary, content);
 
@@ -99,23 +106,28 @@ export const publishBlogOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
 
         return res.json(formatter.formatSuccessfulResponse('Blog post published sucessfully!'));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(e.message));
+        next(e);
     }
 };
 
-export const removeBlog = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res) => {
+export const removeBlog = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         // check JWT token
         const authHeader = req.headers.authorization;
-        const jwtToken = authHeader.slice(7, authHeader.length - 1);
+        const jwtToken = authHeader?.slice(7, authHeader.length - 1);
 
-        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new Error("Authorization header must be present and valid");
+        if (!jwtToken || !jwtAdapter.verify(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
 
         // get category and id of blog post
         const id = req.params.id;
+        if (!id) throw new InvalidRequest("The request is missing the id parameter");
 
         // find blog to remove in db
         const blogs = await dbAdapter.getAllOf('blog');
+
+        // if no post has been found return error
+        if (!blogs.length) throw new NotFound('Blog post with id: ' + id + ' not found');
+
         const { category, title, summary, content, createdAt, media } = blogs.filter((blog) => blog.id === id)[0];
 
         // create model object of the post
@@ -136,6 +148,6 @@ export const removeBlog = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, r
 
         return res.json(formatter.formatSuccessfulResponse('Blog post removed successfully!'));
     } catch (e) {
-        return res.status(500).send(formatter.formatErrorResponse(e.message));
+        next(e);
     }
 };

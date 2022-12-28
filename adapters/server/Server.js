@@ -25,14 +25,16 @@ class ServerAdapter {
     #db;
     #jwt;
     #crypto;
+    #errorHandler;
 
-    constructor(port, logger, dbAdapter, jwtAdapter, cryptoAdapter) {
+    constructor(port, logger, dbAdapter, jwtAdapter, cryptoAdapter, errorHandler) {
         this.#server = express();
         this.#port = port;
         this.#logger = logger;
         this.#db = dbAdapter;
         this.#jwt = jwtAdapter;
         this.#crypto = cryptoAdapter;
+        this.#errorHandler = errorHandler;
     }
 
     start() {
@@ -45,6 +47,7 @@ class ServerAdapter {
             origin: ['localhost:3000'] // TODO: add allowed origin url
         }*/));
         this.registeRouters();
+        this.#server.use(this.#errorHandler);
     }
 
     registerRoute(router, route) {
