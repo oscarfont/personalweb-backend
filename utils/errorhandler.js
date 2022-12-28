@@ -1,3 +1,10 @@
+import { formatter } from "./formatter.js";
+import NotFound from "../models/errors/NotFound.js";
+import AuthenticationError from "../models/errors/AuthenticationError.js";
+import InvalidRequest from "../models/errors/InvalidRequest.js";
+import LoggerAdapter from "../adapters/logger/Logger.js";
+import { LogLevel } from "../adapters/logger/LogLevel.js";
+
 /**
  * @author Óscar Font
  * =========================
@@ -8,11 +15,6 @@
  * and formatting them accordingly depending on the detected error.
  */
 
-import { formatter } from "./formatter.js";
-import NotFound from "../models/errors/NotFound.js";
-import AuthenticationError from "../models/errors/AuthenticationError.js";
-import InvalidRequest from "../models/errors/InvalidRequest.js";
-
 const statuses = {
     BAD_REQUEST: 400,
     UNAUTHORIZED: 401,
@@ -22,16 +24,26 @@ const statuses = {
 
 export const errorHandler = (err, req, res, next) => {
 
+    const logger = new LoggerAdapter();
+
+    const path = req.originalUrl;
+    let status = statuses.INTERNAL_ERROR;
+    let error = 'SERVER INTERNAL ERROR';
+    const message = err.message;
+
     if (err instanceof NotFound) {
-        res.status(statuses.NOT_FOUND).send(formatter.formatErrorResponse(err.message));
+        status = statuses.NOT_FOUND;
+        error = 'NOT FOUND';
     }
     else if (err instanceof AuthenticationError) {
-        res.status(statuses.UNAUTHORIZED).send(formatter.formatErrorResponse(err.message));
+        status = statuses.UNAUTHORIZED;
+        error = 'UNAUTHORIZED';
     }
     else if (err instanceof InvalidRequest) {
-        res.status(statuses.BAD_REQUEST).send(formatter.formatErrorResponse(err.message));
+        status = statuses.BAD_REQUEST;
+        error = 'BAD REQUEST';
     }
-    else {
-        res.status(statuses.INTERNAL_ERROR).send(formatter.formatErrorResponse(err.message));
-    }
+
+    logger.log(path, LogLevel.ERROR, `method: ${req.method}, error: ${error} statusCode: ${status}, message: ${message}`)
+    res.status(status).send(formatter.formatErrorResponse(message));
 }

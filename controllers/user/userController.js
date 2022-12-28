@@ -1,3 +1,9 @@
+import User from "../../models/user.js";
+import { formatter } from "../../utils/formatter.js";
+import InvalidRequest from "../../models/errors/InvalidRequest.js";
+import AuthenticationError from "../../models/errors/AuthenticationError.js";
+import { LogLevel } from "../../adapters/logger/LogLevel.js";
+
 /**
  * @author Óscar Font
  * =====================
@@ -8,17 +14,13 @@
  * It contains the main functions that handle the main requests
  * of the backend server endpoints regarding users of the application.
  */
-
-import User from "../../models/user.js";
-import { formatter } from "../../utils/formatter.js";
-import InvalidRequest from "../../models/errors/InvalidRequest.js";
-import AuthenticationError from "../../models/errors/AuthenticationError.js";
-
 export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
         // get request user data
         const { name, email, password } = req.body;
         if (!name || !email || !password) throw new InvalidRequest("Missing some of the fields in the request body");
+
+        logger.log("/user/signUp", LogLevel.INFO, `method: POST, params: [], request-body: {${name}, ${email}, ${password}}`);
 
         // create user model and set encrypted pass
         const user = new User(email, 'admin');
@@ -44,6 +46,8 @@ export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
         // get user credentials
         const { email, password } = req.body;
 
+        logger.log("/user/signIn", LogLevel.INFO, `method: POST, params: [], request-body: {${email}, ${password}}`);
+
         // obtain users data
         const userData = dbAdapter.findOf('user', { email: email })[0];
         if (!userData) throw new AuthenticationError('There is no user registered for the current email. Please try again.');
@@ -68,6 +72,9 @@ export const signIn = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, 
 };
 
 export const signOut = (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
+
+    logger.log("/user/signOut", LogLevel.INFO, `method: POST, params: [], request-body: {}`);
+
     try {
         // client will remove user token and call this endpoint
         return res.json(formatter.formatSuccessfulResponse('User signed out successfully'));

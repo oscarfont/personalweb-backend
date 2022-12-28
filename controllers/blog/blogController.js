@@ -2,6 +2,7 @@ import FroalaAdapter from "../../adapters/froalasdk/FroalaAdapter.js";
 import BlogPost from "../../models/blogpost.js";
 import InvalidRequest from "../../models/errors/InvalidRequest.js";
 import NotFound from "../../models/errors/NotFound.js";
+import { LogLevel } from "../../adapters/logger/LogLevel.js";
 
 /**
  * @author Óscar Font
@@ -17,6 +18,9 @@ import NotFound from "../../models/errors/NotFound.js";
 import { formatter } from "../../utils/formatter.js";
 
 export const getAllBlogCategories = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
+
+    logger.log("/blog/categories/get/all", LogLevel.INFO, 'method: GET, params: [], request-body: {}');
+
     try {
         // get all blogs and categories
         const blogs = await dbAdapter.getAllOf('blog');
@@ -35,10 +39,13 @@ export const getAllBlogCategories = async (logger, dbAdapter, jwtAdapter, crypto
 
 
 export const getAllBlogsOfCategory = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
+
     try {
         // get category of blogs to be retrieved
         const category = req.query.category;
         if (!category) throw new InvalidRequest("Missing category request parameter");
+
+        logger.log("/blog/get/all?category", LogLevel.INFO, `method: GET, params: [${category}], request-body: {}`);
 
         // get all blogs of category
         const blogs = await dbAdapter.findOf('blog', { category: category });
@@ -61,6 +68,8 @@ export const getBlogDetail = async (logger, dbAdapter, jwtAdapter, cryptoAdapter
         // get category and id of the post to be retrieved
         const { id, category } = req.body;
         if (!id || !category) throw new InvalidRequest("Missing id and category fields in the request body");
+
+        logger.log("/blog/get/detail", LogLevel.INFO, `method: POST, params: [], request-body: {${category} , ${id}}`);
 
         // get all blogs of category
         const blogs = await dbAdapter.findOf('blog', { category: category });
@@ -95,6 +104,8 @@ export const publishBlogOfCategory = async (logger, dbAdapter, jwtAdapter, crypt
 
         if (!category || !title || !summary || !content || !media) throw new InvalidRequest("The request is missing some parameters");
 
+        logger.log("/blog/publish?category", LogLevel.INFO, `method: POST, params: [${category}], request-body: {${title}, ${summary}, ${content}, ${media}}`);
+
         const blogPost = new BlogPost(category, title, summary, content);
 
         // add date to the post
@@ -121,6 +132,8 @@ export const removeBlog = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, r
         // get category and id of blog post
         const id = req.params.id;
         if (!id) throw new InvalidRequest("The request is missing the id parameter");
+
+        logger.log("/blog/remove", LogLevel.INFO, `method: DELETE, params: [${id} ], request-body: {}`);
 
         // find blog to remove in db
         const blogs = await dbAdapter.getAllOf('blog');
