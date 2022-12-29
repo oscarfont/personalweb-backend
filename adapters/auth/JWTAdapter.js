@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { jwtSecret } from '../../utils/config';
 /**
  * @author Óscar Font
  * ====================
@@ -25,8 +26,9 @@ class JWTAdapter {
 
     generateToken(role) {
         try {
-            // TODO obtain secret from ENV var
-            return this.#jwtInstance.sign({}, 'mysecret', { expiresIn: this.expiresIn });
+            return this.#jwtInstance.sign({
+                role: role
+            }, jwtSecret, { expiresIn: this.expiresIn });
         } catch (err) {
             throw err;
         }
@@ -34,8 +36,7 @@ class JWTAdapter {
 
     verifyToken(jwt) {
         try {
-            // TODO obtain secret from ENV var
-            const decoded = this.#jwtInstance.verify(jwt, 'mysecret');
+            const decoded = this.#jwtInstance.verify(jwt, jwtSecret);
             return decoded;
         } catch (err) {
             throw err

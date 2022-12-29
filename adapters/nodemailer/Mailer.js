@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { apiKey, email } from '../../utils/config';
 
 /**
  * @author Óscar Font
@@ -19,8 +20,8 @@ class NodeMailerAdapter {
     password;
 
     constructor() {
-        this.username = "oscar.font99@gmail.com";
-        this.password = "besutwiwvqycnkga";
+        this.username = email;
+        this.password = apiKey;
         this.#mailer = nodemailer.createTransport({
             service: "gmail",
             host: "smtp.gmail.com",

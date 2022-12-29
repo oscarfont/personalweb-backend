@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { cryptoKey } from '../../utils/config';
 /**
  * @author Óscar Font
  * ====================
@@ -21,7 +22,7 @@ class CryptoAdapter {
     constructor(logger) {
         this.#logger = logger;
         this.#crytpoInstance = crypto;
-        this.#key = this.#crytpoInstance.randomBytes(32); // TODO read from ENV vars
+        this.#key = Buffer.from(cryptoKey, 'hex');
         this.#iv = this.#crytpoInstance.randomBytes(12);
         this.#algorithm = 'aes-256-gcm';
         this.#cipher = this.#crytpoInstance.createCipheriv(this.#algorithm, Buffer.from(this.#key, 'utf-8'), Buffer.from(this.#iv, 'utf-8'));

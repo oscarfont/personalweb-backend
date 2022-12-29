@@ -5,8 +5,12 @@ import { LogLevel } from './adapters/logger/LogLevel.js';
 import JWTAdapter from './adapters/auth/JWTAdapter.js';
 import CryptoAdapter from './adapters/auth/CryptoAdapter.js';
 import { errorHandler } from './utils/errorhandler.js'
+import dotenv from 'dotenv'
 
 const Main = async () => {
+    // init dortenv config
+    dotenv.config()
+
     // init logger
     const logger = new LoggerAdapter();
 
@@ -22,7 +26,7 @@ const Main = async () => {
     const port = 3000;
     const server = new ServerAdapter(port, logger, db, jwtAdapter, cryptoAdapter, errorHandler);
     server.start();
-    logger.log(Main.name, LogLevel.INFO, 'Server sucessfully started at port ' + port);
+    logger.log(Main.name, LogLevel.INFO, `Server sucessfully started at port ${port}`);
 };
 
 Main();

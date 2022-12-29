@@ -6,3 +6,4 @@ coverage
 
 #FILES
 package-lock.json
+.env
