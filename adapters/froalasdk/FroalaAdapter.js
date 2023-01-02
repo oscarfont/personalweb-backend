@@ -42,7 +42,6 @@ class FroalaAdapter {
                     return reject(error);
                 }
 
-                // TODO change this to something more elegant
                 const newPath = data?.link.split('/')[2];
 
                 resolve({ link: newPath });

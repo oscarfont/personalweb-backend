@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { apiKey, email } from '../../utils/config';
+import { apiKey, email } from '../../utils/config.js';
 
 /**
  * @author Óscar Font

@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { cryptoKey } from '../../utils/config';
+import { cryptoKey } from '../../utils/config.js';
 /**
  * @author Óscar Font
  * ====================

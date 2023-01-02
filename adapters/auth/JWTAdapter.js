@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { jwtSecret } from '../../utils/config';
+import { jwtSecret } from '../../utils/config.js';
 /**
  * @author Óscar Font
  * ====================
