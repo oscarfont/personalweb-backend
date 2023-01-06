@@ -24,7 +24,7 @@ describe("Testing the blog endpoints", () => {
         const jwtAdapter = new JWTAdapter(logger);
         const cryptoAdapter = new CryptoAdapter(logger);
 
-        // init server adapter
+        // init server rollback
         server = new ServerAdapter(3000, logger, db, jwtAdapter, cryptoAdapter, errorHandler);
         server.start();
     });
