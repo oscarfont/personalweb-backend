@@ -70,7 +70,9 @@ jobs:
         with:
             name: .env
             path: ./.env
-            run: ls -a
+
+      - name: check folder structure
+        run: ls -a
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
