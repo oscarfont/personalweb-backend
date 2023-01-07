@@ -20,7 +20,7 @@ jobs:
 
       strategy:
           matrix:
-              node-version: [lts/gallium]
+              node-version: lts/gallium
 
       steps:
           - uses: actions/checkout@v2
@@ -28,6 +28,7 @@ jobs:
             uses: actions/setup-node@v2
             with:
                 node-version: ${{ matrix.node-version }}
+
           - name: create env file
             run: |
               touch .env
@@ -36,6 +37,14 @@ jobs:
               echo EMAIL="'${{ secrets.ENV_EMAIL }}'" >> .env
               echo API_KEY="'${{ secrets.ENV_API_KEY }}'" >> .env
 
+          - name: Temporarily upload .env file
+              uses: actions/upload-artifact@v2
+              with:
+                  name: .env
+                  path: ./.env
+                  retention-days: 1
+
+          - name: install dependencies and run tests
           - run: npm i
           - run: npm test --if-present
 
@@ -52,6 +61,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Retrieve built .env package
+              uses: actions/download-artifact@v2
+              with:
+                  name: env
+                  path: ./.env
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
