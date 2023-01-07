@@ -44,9 +44,11 @@ jobs:
                 path: ./.env
                 retention-days: 1
 
-          - name: install dependencies and run tests
-          - run: npm i
-          - run: npm test --if-present
+          - name: install dependencies
+            run: npm i
+          
+          - name: run tests
+            run: npm test --if-present
 
   push_to_registry:
     needs: build_and_test
