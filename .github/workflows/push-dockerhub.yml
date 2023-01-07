@@ -11,7 +11,7 @@ name: Publish Docker image
 
 on:
   push:
-    branch:
+    branches:
       master
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
 
       strategy:
           matrix:
-              node-version: lts/gallium
+              node-version: [lts/gallium]
 
       steps:
           - uses: actions/checkout@v2
