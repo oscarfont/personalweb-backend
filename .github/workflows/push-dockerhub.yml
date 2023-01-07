@@ -36,14 +36,6 @@ jobs:
               echo JWT_SECRET="'${{ secrets.ENV_JWT_SECRET }}'" >> .env
               echo EMAIL="'${{ secrets.ENV_EMAIL }}'" >> .env
               echo API_KEY="'${{ secrets.ENV_API_KEY }}'" >> .env
-              cat .env
-
-          - name: Temporarily upload .env file
-            uses: actions/upload-artifact@v2
-            with:
-                name: .env
-                path: ./.env
-                retention-days: 1
 
           - name: install dependencies
             run: npm i
@@ -65,18 +57,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Retrieve built .env package
-        uses: actions/download-artifact@v2
-        with:
-            name: .env
-            path: ./.env
-
-      - name: check folder structure
-        run: ls -a
-
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
           push: true
-          tags: ofontgg/personalweb-backend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/personalweb-backend:latest
