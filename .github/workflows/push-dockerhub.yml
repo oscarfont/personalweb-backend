@@ -35,6 +35,7 @@ jobs:
               echo JWT_SECRET='${{ secrets.ENV_JWT_SECRET }}' >> .env
               echo EMAIL='${{ secrets.ENV_EMAIL }}' >> .env
               echo API_KEY='${{ secrets.ENV_API_KEY }}' >> .env
+              cat .env
 
           - run: npm i
           - run: npm test --if-present
