@@ -31,11 +31,10 @@ jobs:
           - name: create env file
             run: |
               touch .env
-              echo CRYPTO_KEY='${{ secrets.ENV_CRYPTO_KEY }}' >> .env
-              echo JWT_SECRET='${{ secrets.ENV_JWT_SECRET }}' >> .env
-              echo EMAIL='${{ secrets.ENV_EMAIL }}' >> .env
-              echo API_KEY='${{ secrets.ENV_API_KEY }}' >> .env
-              cat .env
+              echo CRYPTO_KEY="'"${{ secrets.ENV_CRYPTO_KEY }}"'" >> .env
+              echo JWT_SECRET="'"${{ secrets.ENV_JWT_SECRET }}"'" >> .env
+              echo EMAIL="'"${{ secrets.ENV_EMAIL }}"'" >> .env
+              echo API_KEY="'"${{ secrets.ENV_API_KEY }}"'" >> .env
 
           - run: npm i
           - run: npm test --if-present
