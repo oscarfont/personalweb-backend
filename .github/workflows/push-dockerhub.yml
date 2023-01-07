@@ -38,11 +38,11 @@ jobs:
               echo API_KEY="'${{ secrets.ENV_API_KEY }}'" >> .env
 
           - name: Temporarily upload .env file
-              uses: actions/upload-artifact@v2
-              with:
-                  name: .env
-                  path: ./.env
-                  retention-days: 1
+            uses: actions/upload-artifact@v2
+            with:
+                name: .env
+                path: ./.env
+                retention-days: 1
 
           - name: install dependencies and run tests
           - run: npm i
