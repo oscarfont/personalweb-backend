@@ -26,6 +26,7 @@ class ServerAdapter {
     #jwt;
     #crypto;
     #errorHandler;
+    apiPrefix;
 
     constructor(port, logger, dbAdapter, jwtAdapter, cryptoAdapter, errorHandler) {
         this.#server = express();
@@ -35,6 +36,7 @@ class ServerAdapter {
         this.#jwt = jwtAdapter;
         this.#crypto = cryptoAdapter;
         this.#errorHandler = errorHandler;
+        this.apiPrefix = '/api';
     }
 
     start() {
@@ -43,7 +45,9 @@ class ServerAdapter {
         this.#server.use(express.json());
         this.#server.use(express.static('public'));
         this.#server.use(helmet())
-        this.#server.use(cors());
+        this.#server.use(cors({
+            origin: ['https://ofontg.dev', 'https://www.ofontg.dev']
+        }));
         this.registeRouters();
         this.#server.use(this.#errorHandler);
     }
@@ -83,9 +87,9 @@ class ServerAdapter {
         });
 
 
-        this.#server.use(blogRouter.prefix, bgRouter);
-        this.#server.use(userRouter.prefix, usrRouter);
-        this.#server.use(utilsRouter.prefix, utlsRouter)
+        this.#server.use(this.apiPrefix + blogRouter.prefix, bgRouter);
+        this.#server.use(this.apiPrefix + userRouter.prefix, usrRouter);
+        this.#server.use(this.apiPrefix + utilsRouter.prefix, utlsRouter)
     }
 
     // getters
