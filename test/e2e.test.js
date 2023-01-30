@@ -35,7 +35,7 @@ describe("Testing the blog endpoints", () => {
             email: "test.test@testmail.com",
             password: "TesT1234"
         }
-        const response = await request(server.server).post("/user/signUp").send(body);
+        const response = await request(server.server).post("/api/user/signUp").send(body);
         expect(response.body.status).toBe("success");
         expect(response.status).toBe(200);
         expect(response.body.data.email).toBe("test.test@testmail.com");
@@ -47,7 +47,7 @@ describe("Testing the blog endpoints", () => {
             email: "test.test@testmail.com",
             password: "TesT1234"
         }
-        const response = await request(server.server).post("/user/signIn").send(body);
+        const response = await request(server.server).post("/api/user/signIn").send(body);
         expect(response.body.status).toBe("success");
         expect(response.status).toBe(200);
         expect(response.body.data.jwt.length).toBeGreaterThan(0);
@@ -59,13 +59,13 @@ describe("Testing the blog endpoints", () => {
             email: "test.test@testmail.com",
             password: "secret333"
         }
-        const response = await request(server.server).post("/user/signIn").send(body);
+        const response = await request(server.server).post("/api/user/signIn").send(body);
         expect(response.status).toBe(401);
     });
 
     test("The POST /utils/uploadImage shall return a BAD REQUEST error when no jwt sent", async () => {
         const response = await request(server.server)
-            .post("/utils/uploadImage")
+            .post("/api/utils/uploadImage")
             .send({});
         expect(response.status).toBe(400);
     });
@@ -77,7 +77,7 @@ describe("Testing the blog endpoints", () => {
         }
 
         const response = await request(server.server)
-            .post("/blog/get/detail")
+            .post("/api/blog/get/detail")
             .send(body);
 
         expect(response.body.message).toBe('Blog post with id: ' + body.id + ' not found');
@@ -92,7 +92,7 @@ describe("Testing the blog endpoints", () => {
             media: []
         }
         const response = await request(server.server)
-            .post("/blog/publish?category=IT%20Blog")
+            .post("/api/blog/publish?category=IT%20Blog")
             .set('Authorization', `Bearer ${jwt}`)
             .send(body);
         expect(response.status).toBe(200);
@@ -100,14 +100,14 @@ describe("Testing the blog endpoints", () => {
 
     test("The GET /blog/categories/get/all shall get all categories of blogs", async () => {
         const response = await request(server.server)
-            .get("/blog/categories/get/all");
+            .get("/api/blog/categories/get/all");
 
         expect(response.status).toBe(200);
         expect(response.body.data.length).toBeGreaterThan(0);
     });
 
     test("The GET /blog/get/all?category shall return return the recently published test sucessfully", async () => {
-        const response = await request(server.server).get("/blog/get/all?category=IT%20Blog");
+        const response = await request(server.server).get("/api/blog/get/all?category=IT%20Blog");
         expect(response.body.status).toBe("success");
         expect(response.status).toBe(200);
         expect(response.body.data.length).toBeGreaterThan(0);
@@ -116,7 +116,7 @@ describe("Testing the blog endpoints", () => {
 
     test("The DELETE /blog/remove/id shall remove the recently published post sucessfully", async () => {
         const response = await request(server.server)
-            .delete(`/blog/remove/${postId}`)
+            .delete(`/api/blog/remove/${postId}`)
             .set('Authorization', `Bearer ${jwt}`)
             .send();
         expect(response.body.status).toBe("success");
