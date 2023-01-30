@@ -46,7 +46,7 @@ class ServerAdapter {
         this.#server.use(express.static('public'));
         this.#server.use(helmet())
         this.#server.use(cors({
-            origin: ['https://ofontg.dev', 'https://www.ofontg.dev']
+            origin: ['localhost', 'https://ofontg.dev', 'https://www.ofontg.dev']
         }));
         this.registeRouters();
         this.#server.use(this.#errorHandler);
