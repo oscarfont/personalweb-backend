@@ -24,11 +24,11 @@ class UserRouter {
                 method: MethodEnum.POST,
                 handler: signIn
             },
-            {
+            /*{
                 path: '/signUp',
                 method: MethodEnum.POST,
                 handler: signUp
-            },
+            },*/
             {
                 path: '/signOut',
                 method: MethodEnum.POST,
