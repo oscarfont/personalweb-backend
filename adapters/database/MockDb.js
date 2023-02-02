@@ -25,7 +25,18 @@ class MockDb {
 
     initDB() {
         this.#data = {
-            user: [],
+            user: [
+                {
+                    "email": "test.test@testmail.com",
+                    "name": "Test",
+                    "role": "admin",
+                    "password": {
+                        "iv": "ml+p9MV0w2/E9H3Y",
+                        "data": "FfF71xUo6mE="
+                    },
+                    "id": "cd296770-4980-4bb7-8743-245043845cb0"
+                }
+            ],
             blog: []
         }
         this.#logger.log(MockDb.name, LogLevel.DEBUG, 'User and Blog collections successfully created');

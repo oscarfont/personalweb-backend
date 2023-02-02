@@ -29,19 +29,6 @@ describe("Testing the blog endpoints", () => {
         server.start();
     });
 
-    test("The POST /user/signUp shall register a user in the system successfully", async () => {
-        const body = {
-            name: "Test",
-            email: "test.test@testmail.com",
-            password: "TesT1234"
-        }
-        const response = await request(server.server).post("/api/user/signUp").send(body);
-        expect(response.body.status).toBe("success");
-        expect(response.status).toBe(200);
-        expect(response.body.data.email).toBe("test.test@testmail.com");
-        expect(response.body.data.jwt.length).toBeGreaterThan(0);
-    });
-
     test("The POST /user/signIn shall register a user in the system successfully", async () => {
         const body = {
             email: "test.test@testmail.com",

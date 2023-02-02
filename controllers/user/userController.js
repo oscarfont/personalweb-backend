@@ -16,6 +16,12 @@ import { LogLevel } from "../../adapters/logger/LogLevel.js";
  */
 export const signUp = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, req, res, next) => {
     try {
+        //check JWT token
+        const authHeader = req.headers.authorization;
+        const jwtToken = authHeader?.slice(7, authHeader.length);
+
+        if (!jwtToken || !jwtAdapter.verifyToken(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
+
         // get request user data
         const { name, email, password } = req.body;
         if (!name || !email || !password) throw new InvalidRequest("Missing some of the fields in the request body");
