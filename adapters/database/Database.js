@@ -1,4 +1,6 @@
 import { Low, JSONFile } from 'lowdb'
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { LogLevel } from '../logger/LogLevel.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,7 +22,9 @@ class DatabaseAdapter {
 
     constructor(logger) {
         this.#logger = logger;
-        this.#dbClient = new Low(new JSONFile('./data/db.json'));
+        const __dirname = dirname(fileURLToPath(import.meta.url));
+        const file = join(`${__dirname}/data/`, 'db.json')
+        this.#dbClient = new Low(new JSONFile(file));
     }
 
     getDBClient() {
