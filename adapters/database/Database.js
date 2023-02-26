@@ -20,7 +20,7 @@ class DatabaseAdapter {
 
     constructor(logger) {
         this.#logger = logger;
-        this.#dbClient = new Low(new JSONFile('./adapters/database/db.json'));
+        this.#dbClient = new Low(new JSONFile('./data/db.json'));
     }
 
     getDBClient() {
