@@ -1,5 +1,5 @@
 diff --git a/node_modules/wysiwyg-editor-node-sdk/lib/utils/disk.management.js b/node_modules/wysiwyg-editor-node-sdk/lib/utils/disk.management.js
-index bb977a3..11fa9c2 100644
+index bb977a3..a4fc042 100644
 --- a/node_modules/wysiwyg-editor-node-sdk/lib/utils/disk.management.js
 +++ b/node_modules/wysiwyg-editor-node-sdk/lib/utils/disk.management.js
 @@ -1,10 +1,10 @@
@@ -15,7 +15,7 @@ index bb977a3..11fa9c2 100644
  
  /**
  * Upload a file to the specified location.
-@@ -21,103 +21,106 @@ var gm = require('gm').subClass({imageMagick: true});
+@@ -21,103 +21,104 @@ var gm = require('gm').subClass({imageMagick: true});
  */
  function upload(req, fileRoute, options, callback) {
  
@@ -111,74 +111,73 @@ index bb977a3..11fa9c2 100644
 -    var appDir = path.dirname(require.main.filename);
 -    // Generate path where the file will be saved.
 -    saveToPath = path.join(appDir, link);
-+        console.log(saveToPath)
- 
--    // Pipe reader stream (file from client) into writer stream (file from disk).
--    file.on('error', handleStreamError);
 +        // Pipe reader stream (file from client) into writer stream (file from disk).
 +        file.on('error', handleStreamError);
  
--    var diskWriterStream = fs.createWriteStream(saveToPath);
--    diskWriterStream.on('error', handleStreamError);
--    diskWriterStream.on('finish', function() {
+-    // Pipe reader stream (file from client) into writer stream (file from disk).
+-    file.on('error', handleStreamError);
 +        var diskWriterStream = fs.createWriteStream(saveToPath);
 +        diskWriterStream.on('error', handleStreamError);
 +        diskWriterStream.on('finish', function () {
  
--      // Validate uploaded file.
--      if (options.validation) {
+-    var diskWriterStream = fs.createWriteStream(saveToPath);
+-    diskWriterStream.on('error', handleStreamError);
+-    diskWriterStream.on('finish', function() {
 +            // Validate uploaded file.
 +            if (options.validation) {
  
--        return utils.isValid(options.validation, saveToPath, mimetype, function(err, status) {
+-      // Validate uploaded file.
+-      if (options.validation) {
 +                return utils.isValid(options.validation, saveToPath, mimetype, function (err, status) {
  
--          if (err) {
--            return handleStreamError(err);
--          }
+-        return utils.isValid(options.validation, saveToPath, mimetype, function(err, status) {
 +                    if (err) {
 +                        return handleStreamError(err);
 +                    }
  
--          if (!status) {
--            return handleStreamError('File does not meet the validation.');
+-          if (err) {
+-            return handleStreamError(err);
 -          }
 +                    if (!status) {
 +                        return handleStreamError('File does not meet the validation.');
 +                    }
  
--          return sendResponse();
--        });
--      }
--      return sendResponse();
--    })
+-          if (!status) {
+-            return handleStreamError('File does not meet the validation.');
+-          }
 +                    return sendResponse();
 +                });
 +            }
 +            return sendResponse();
 +        })
  
--    if (options.resize && mimetype != 'image/svg+xml') {
+-          return sendResponse();
+-        });
+-      }
+-      return sendResponse();
+-    })
 +        if (options.resize && mimetype != 'image/svg+xml') {
  
--      var gmFile = gm(file);
--      var imageResizeStream = gmFile.resize.apply(gmFile, options.resize).stream();
--      imageResizeStream.on('error', handleStreamError);
+-    if (options.resize && mimetype != 'image/svg+xml') {
 +            var gmFile = gm(file);
 +            var imageResizeStream = gmFile.resize.apply(gmFile, options.resize).stream();
 +            imageResizeStream.on('error', handleStreamError);
  
--      imageResizeStream.pipe(diskWriterStream);
--    } else {
--      file.pipe(diskWriterStream);
--    }
--  });
+-      var gmFile = gm(file);
+-      var imageResizeStream = gmFile.resize.apply(gmFile, options.resize).stream();
+-      imageResizeStream.on('error', handleStreamError);
 +            imageResizeStream.pipe(diskWriterStream);
 +        } else {
 +            file.pipe(diskWriterStream);
 +        }
 +    });
  
+-      imageResizeStream.pipe(diskWriterStream);
+-    } else {
+-      file.pipe(diskWriterStream);
+-    }
+-  });
+-
 -  // Handle file upload termination.
 -  busboy.on('error', handleStreamError);
 -  req.on('error', handleStreamError);
@@ -193,7 +192,7 @@ index bb977a3..11fa9c2 100644
  }
  
  /**
-@@ -126,14 +129,17 @@ function upload(req, fileRoute, options, callback) {
+@@ -126,14 +127,16 @@ function upload(req, fileRoute, options, callback) {
  * @param src string path to file
  * @param callback returns null/undefined or error string
  */
@@ -207,7 +206,6 @@ index bb977a3..11fa9c2 100644
 -    return callback();
 -  });
 +    const appDir = process.cwd();
-+    console.log(appDir)
 +
 +    fs.unlink(path.join(path.dirname(appDir), src), function (err) {
 +        if (err) {
