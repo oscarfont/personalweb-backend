@@ -43,7 +43,7 @@ class ServerAdapter {
         this.#server.listen(this.#port);
         this.#logger.log(ServerAdapter.name, LogLevel.DEBUG, `Server started successfully at port ${this.#port}`);
         this.#server.use(express.json());
-        this.#server.use(express.static('public'));
+        this.#server.use('/public', express.static('public'));
         this.#server.use(helmet())
         this.#server.use(cors({
             origin: ['localhost', 'https://ofontg.dev', 'https://www.ofontg.dev']
