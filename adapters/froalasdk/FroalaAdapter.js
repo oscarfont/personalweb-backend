@@ -17,7 +17,7 @@ class FroalaAdapter {
     imagesDirectory;
 
     constructor() {
-        this.imagesDirectory = '/personalweb-backend/public/';
+        this.imagesDirectory = '/public/';
         this.#froalaSdk = FroalaEditor;
     }
 
