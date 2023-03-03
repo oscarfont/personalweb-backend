@@ -51,7 +51,7 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
         const result = await froalaAdapter.processImage(req);
 
         // log size of the file stored in docker
-        const size = statSync(`/personal-web-backend/public/${result?.link}`).size;
+        const size = statSync(`/personalweb-backend/public/${result?.link}`).size;
         logger.log("/utils/uploadImage", LogLevel.INFO, `size of the file stored: ${size}`);
 
         return res.json(formatter.formatSuccessfulResponse(result?.link));
