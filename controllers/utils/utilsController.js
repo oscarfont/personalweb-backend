@@ -43,7 +43,6 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
         if (!jwtToken || !jwtAdapter.verifyToken(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
 
         logger.log("/utils/uploadImage", LogLevel.INFO, `method: POST, params: [], request-body: {${req?.body}}`);
-        logger.log("/utils/uploadImage", LogLevel.INFO, `size of the file received: ${req?.body.length}`);
 
         // create node mailer instance
         const froalaAdapter = new FroalaAdapter();
@@ -52,7 +51,7 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
         const result = await froalaAdapter.processImage(req);
 
         // log size of the file stored in docker
-        const size = statSync(`../../public/${result?.link}`).size;
+        const size = statSync(`/personal-web-backend/public/${result?.link}`).size;
         logger.log("/utils/uploadImage", LogLevel.INFO, `size of the file stored: ${size}`);
 
         return res.json(formatter.formatSuccessfulResponse(result?.link));
