@@ -1,4 +1,5 @@
 import FroalaEditor from 'wysiwyg-editor-node-sdk/lib/froalaEditor.js';
+import { LogLevel } from "../../adapters/logger/LogLevel.js";
 
 /**
  * @author Óscar Font
