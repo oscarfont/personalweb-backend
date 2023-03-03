@@ -48,9 +48,8 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
 
         // process image upload
         const result = await froalaAdapter.processImage(req);
-        const host = req.headers.host;
 
-        return res.json(formatter.formatSuccessfulResponse(`https://${host}/public/${result?.link}`));
+        return res.json(formatter.formatSuccessfulResponse(result?.link));
     } catch (e) {
         next(e);
     }
