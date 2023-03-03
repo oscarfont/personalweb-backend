@@ -1,4 +1,3 @@
-import e from 'cors';
 import FroalaEditor from 'wysiwyg-editor-node-sdk/lib/froalaEditor.js';
 
 /**
@@ -18,7 +17,7 @@ class FroalaAdapter {
     imagesDirectory;
 
     constructor() {
-        this.imagesDirectory = '/public/';
+        this.imagesDirectory = '/personalweb-backend/public/';
         this.#froalaSdk = FroalaEditor;
     }
 
@@ -32,7 +31,7 @@ class FroalaAdapter {
         this.imagesDirectory = newDir;
     }
 
-    async processImage(request) {
+    async processImage(logger, request) {
         return new Promise((resolve, reject) => {
             var options = {
                 resize: [512, 512]
@@ -41,6 +40,9 @@ class FroalaAdapter {
                 if (error) {
                     return reject(error);
                 }
+
+                logger.log("/utils/uploadImage", LogLevel.INFO, `image data received: ${data}`);
+                logger.log("/utils/uploadImage", LogLevel.INFO, `image data link: ${data?.link}`);
 
                 const newPath = data?.link.split('/')[2];
 
