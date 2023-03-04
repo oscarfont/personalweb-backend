@@ -33,7 +33,7 @@ class FroalaAdapter {
     }
 
     async processImage(logger, request) {
-        logger.log("/utils/uploadImage", LogLevel.INFO, `log request information: ${request}`);
+        logger.log("/utils/uploadImage", LogLevel.INFO, `log request information: ${JSON.stringify(request)}`);
         return new Promise((resolve, reject) => {
             var options = {
                 resize: [512, 512]
@@ -43,7 +43,7 @@ class FroalaAdapter {
                     return reject(error);
                 }
 
-                logger.log("/utils/uploadImage", LogLevel.INFO, `image data received: ${data}`);
+                logger.log("/utils/uploadImage", LogLevel.INFO, `image data received: ${JSON.stringify(data)}`);
                 logger.log("/utils/uploadImage", LogLevel.INFO, `image data link: ${data?.link}`);
 
                 const newPath = data?.link.split('/')[2];
