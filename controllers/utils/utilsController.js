@@ -42,7 +42,7 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
 
         if (!jwtToken || !jwtAdapter.verifyToken(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
 
-        logger.log("/utils/uploadImage", LogLevel.INFO, `method: POST, params: [], request-body: {${JSON.stringify(req?.body)}}`);
+        logger.log("/utils/uploadImage", LogLevel.INFO, `method: POST, params: [], request-body: {${JSON.stringify(req)}}`);
 
         // create node mailer instance
         const froalaAdapter = new FroalaAdapter();

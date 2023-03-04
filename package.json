@@ -24,7 +24,7 @@
         "pino": "^8.3.0",
         "pino-pretty": "^8.1.0",
         "uuid": "^8.3.2",
-        "wysiwyg-editor-node-sdk": "^4.0.16"
+        "wysiwyg-editor-node-sdk": "^4.0.17"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.20.2",
