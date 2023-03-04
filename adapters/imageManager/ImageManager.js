@@ -21,7 +21,15 @@ class ImageManager {
 
     constructor() {
         this.imagesDirectory = `${process.cwd()}/public/`;
-        this.#uploader = multer({ dest: this.imagesDirectory });
+        this.#uploader = multer({
+            dest: this.imagesDirectory,
+            filename: function (req, file, cb) {
+                const originalName = file.originalname;
+                const extension = originalName.slice(originalName.lastIndexOf('.'));
+                const fileName = v4() + extension;
+                cb(null, fileName);
+            }
+        });
     }
 
     // getter
@@ -35,8 +43,7 @@ class ImageManager {
     }
 
     async processImage(req, res) {
-        const imageName = v4();
-        const upload = this.#uploader.single(imageName);
+        const upload = this.#uploader.single('image');
         return new Promise((resolve, reject) => {
             upload(req, res, (error) => {
                 if (error) {
