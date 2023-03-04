@@ -1,5 +1,5 @@
 import NodeMailerAdapter from "../../adapters/nodemailer/Mailer.js";
-import FroalaAdapter from "../../adapters/froalasdk/FroalaAdapter.js";
+import ImageManager from "../../adapters/imageManager/ImageManager.js";
 import InvalidRequest from "../../models/errors/InvalidRequest.js";
 import { formatter } from "../../utils/formatter.js";
 import { LogLevel } from "../../adapters/logger/LogLevel.js";
@@ -45,14 +45,10 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
         logger.log("/utils/uploadImage", LogLevel.INFO, `method: POST, params: [], request-body: {${req?.body}}`);
 
         // create node mailer instance
-        const froalaAdapter = new FroalaAdapter();
+        const imageManager = new ImageManager();
 
         // process image upload
-        const result = await froalaAdapter.processImage(logger, req);
-
-        // log size of the file stored in docker
-        const size = statSync(`/personalweb-backend/public/${result?.link}`).size;
-        logger.log("/utils/uploadImage", LogLevel.INFO, `size of the file stored: ${size}`);
+        const result = await imageManager.processImage(req, res);
 
         return res.json(formatter.formatSuccessfulResponse(result?.link));
     } catch (e) {
@@ -72,13 +68,13 @@ export const deleteImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
 
         logger.log("/utils/deleteImage", LogLevel.INFO, `method: POST, params: [], request-body: {${fileName}}`);
 
-        // create node mailer instance
-        const froalaAdapter = new FroalaAdapter();
+        // create nimage manager instance
+        const imageManager = new ImageManager();
 
-        // process image upload
-        const result = await froalaAdapter.deleteImage(fileName);
+        // process image deletion
+        const result = await imageManager.deleteImage(fileName);
 
-        return res.json(formatter.formatSuccessfulResponse(result?.link));
+        return res.json(formatter.formatSuccessfulResponse({ success: result }));
     } catch (e) {
         next(e);
     }

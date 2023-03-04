@@ -1,4 +1,4 @@
-import FroalaAdapter from "../../adapters/froalasdk/FroalaAdapter.js";
+import FroalaAdapter from "../../adapters/imageManager/ImageManager.js";
 import BlogPost from "../../models/blogpost.js";
 import InvalidRequest from "../../models/errors/InvalidRequest.js";
 import NotFound from "../../models/errors/NotFound.js";
