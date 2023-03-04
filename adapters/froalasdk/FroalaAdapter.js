@@ -33,6 +33,7 @@ class FroalaAdapter {
     }
 
     async processImage(logger, request) {
+        logger.log("/utils/uploadImage", LogLevel.INFO, `log request information: ${request}`);
         return new Promise((resolve, reject) => {
             var options = {
                 resize: [512, 512]
