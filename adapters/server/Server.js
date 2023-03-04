@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import bodyParser from 'body-parser';
+import multer from 'multer';
 import { blogRouter } from "../../controllers/blog/blogRouter.js";
 import { userRouter } from '../../controllers/user/userRouter.js';
 import { utilsRouter } from '../../controllers/utils/utilsRouter.js';
@@ -43,8 +43,8 @@ class ServerAdapter {
     start() {
         this.#server.listen(this.#port);
         this.#logger.log(ServerAdapter.name, LogLevel.DEBUG, `Server started successfully at port ${this.#port}`);
-        this.#server.use(express.json({ limit: "10mb" }));
-        this.#server.use(bodyParser.urlencoded({ extended: false }));
+        this.#server.use(express.json()); // for content json requests
+        this.#server.use(multer().array()); // for multipart/form-data requests
         this.#server.use('/public', express.static('public'));
         this.#server.use(helmet())
         this.#server.use(cors({

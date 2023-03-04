@@ -42,7 +42,6 @@ export const uploadImage = async (logger, dbAdapter, jwtAdapter, cryptoAdapter, 
 
         if (!jwtToken || !jwtAdapter.verifyToken(jwtToken)) throw new InvalidRequest("Authorization header must be present and valid");
 
-        console.log(req);
         logger.log("/utils/uploadImage", LogLevel.INFO, `method: POST, params: [], request-body: {${req?.body}}`);
 
         // create node mailer instance

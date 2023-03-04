@@ -42,9 +42,6 @@ class FroalaAdapter {
                     return reject(error);
                 }
 
-                logger.log("/utils/uploadImage", LogLevel.INFO, `image data received: ${JSON.stringify(data)}`);
-                logger.log("/utils/uploadImage", LogLevel.INFO, `image data link: ${data?.link}`);
-
                 const newPath = data?.link.split('/')[2];
 
                 resolve({ link: newPath });
