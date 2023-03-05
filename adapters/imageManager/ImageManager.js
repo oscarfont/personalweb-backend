@@ -52,7 +52,9 @@ class ImageManager {
                     reject(error);
                 }
 
-                resolve({ link: req?.file?.path });
+                const fileName = req?.file?.path.slice(req?.file?.path.lastIndexOf('/'))
+
+                resolve({ link: fileName });
             });
         });
     }
