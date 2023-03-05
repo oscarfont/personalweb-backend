@@ -24,8 +24,11 @@ class ImageManager {
         this.#uploader = multer({
             dest: this.imagesDirectory,
             filename: function (req, file, cb) {
-                const extension = req.file.mimetype.slice(req.file.mimetype.lastIndexOf('/'));
-                const fileName = `${v4()}.${extension}`;
+                let fileName = req.query.id;
+                if (req.method === 'POST' && req.path === '/utils/uploadImage') {
+                    const extension = file.mimetype.slice(file.mimetype.lastIndexOf('/'));
+                    fileName = `${v4()}.${extension}`;
+                }
                 cb(null, fileName);
             }
         });
