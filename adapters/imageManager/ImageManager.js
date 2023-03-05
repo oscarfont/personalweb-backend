@@ -25,7 +25,7 @@ class ImageManager {
             dest: this.imagesDirectory,
             filename: function (req, file, cb) {
                 const extension = req.file.mimetype.slice(req.file.mimetype.lastIndexOf('/'));
-                const fileName = v4() + extension;
+                const fileName = `${v4()}.${extension}`;
                 cb(null, fileName);
             }
         });
